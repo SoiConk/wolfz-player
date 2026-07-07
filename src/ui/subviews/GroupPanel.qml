@@ -1,0 +1,119 @@
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls
+
+Rectangle {
+    id: groupPanelRoot
+    color: "#1e1e2e"
+    border.color: "#313244"
+    border.width: 1
+
+    Connections {
+        target: playerController
+
+        onHistoryUpdated: (list) => {
+            historyTab.historyList = list
+        }
+    }
+
+    Connections {
+        target: playerController
+
+        onQueueUpdated: (list) => {
+            queueTab.queueList = list
+        }
+
+        onIndexChanged: (index) => {
+            queueTab.currentPlayingIndex = index
+        }
+    }
+
+    property int currentGroupTab: 1 // 0: History, 1: Queue, 2: Lyrics
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 0
+
+        // TabBar (History | Queue | Lyrics)
+        Item {
+            Layout.fillWidth: true
+            Layout.minimumHeight: 50
+            Layout.maximumHeight: 50
+
+            RowLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                Button {
+                    Layout.fillWidth: true; Layout.fillHeight: true; flat: true
+                    contentItem: Text {
+                        text: "History"
+                        color: groupPanelRoot.currentGroupTab === 0 ? "#f38ba8" : "#a6adc8"
+                        font.bold: groupPanelRoot.currentGroupTab === 0
+                        font.pixelSize: 13
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    onClicked: groupPanelRoot.currentGroupTab = 0
+                }
+
+                Button {
+                    Layout.fillWidth: true; Layout.fillHeight: true; flat: true
+                    contentItem: Text {
+                        text: "Queue"
+                        color: groupPanelRoot.currentGroupTab === 1 ? "#f38ba8" : "#a6adc8"
+                        font.bold: groupPanelRoot.currentGroupTab === 1
+                        font.pixelSize: 13
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    onClicked: groupPanelRoot.currentGroupTab = 1
+                }
+
+                Button {
+                    Layout.fillWidth: true; Layout.fillHeight: true; flat: true
+                    contentItem: Text {
+                        text: "Lyrics"
+                        color: groupPanelRoot.currentGroupTab === 2 ? "#f38ba8" : "#a6adc8"
+                        font.bold: groupPanelRoot.currentGroupTab === 2
+                        font.pixelSize: 13
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    onClicked: groupPanelRoot.currentGroupTab = 2
+                }
+            }
+        }
+
+        // Line
+        Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: "#313244" }
+
+        // Content zone
+        StackLayout {
+            id: contentStack
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            currentIndex: groupPanelRoot.currentGroupTab
+            clip: true
+
+            HistoryTab {
+                id: historyTab
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                onPlayRequested: (filePath) => {
+                    playerController.openFile(filePath)
+                }
+            } // index 0
+            QueueTab {
+                id: queueTab
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }   // index 1
+            LyricsTab {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }  // index 2
+        }
+    }
+}
