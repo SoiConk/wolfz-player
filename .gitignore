@@ -3,6 +3,11 @@ build/
 bin/
 obj/
 
+# Qt Creator
+*.user
+*.user.*
+.qtcreator/
+
 # Qt
 *.pro.user
 *.pro.user.*

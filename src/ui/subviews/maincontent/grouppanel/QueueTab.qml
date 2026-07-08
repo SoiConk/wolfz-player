@@ -7,23 +7,19 @@ Item {
     Layout.fillWidth: true
     Layout.fillHeight: true
 
-    // Dữ liệu nhận từ GroupPanel kết nối với C++
     property var queueList: []
     property int currentPlayingIndex: -1
 
-    // Tín hiệu phát ra khi người dùng click vào một bài trong hàng đợi để chuyển bài
     signal itemSelected(int index)
 
-    // Giao diện khi hàng đợi trống
     Text {
-        text: "🎵 Hàng đợi trống"
+        text: "EMPTY"
         color: "#6c7086"
-        font.pixelSize: 13
+        font.pixelSize: 40
         anchors.centerIn: parent
         visible: queueListView.count === 0
     }
 
-    // Danh sách hiển thị hàng đợi phát nhạc
     ListView {
         id: queueListView
         anchors.fill: parent
@@ -37,10 +33,9 @@ Item {
             width: queueListView.width
             height: 45
 
-            // Đổi màu nền nếu là bài hát đang phát hoặc khi hover chuột qua
             background: Rectangle {
                 color: (index === queueTabRoot.currentPlayingIndex)
-                       ? "#2e3148" // Màu nổi bật cho bài đang phát
+                       ? "#2e3148"
                        : (queueItem.hovered ? "#252538" : "transparent")
                 radius: 4
                 border.color: (index === queueTabRoot.currentPlayingIndex) ? "#f38ba8" : "transparent"
@@ -53,7 +48,7 @@ Item {
                 anchors.rightMargin: 10
                 spacing: 10
 
-                // Icon Trạng thái (Chỉ hiện ở bài đang phát)
+                // Play Icon
                 Text {
                     text: "▶"
                     color: "#f38ba8"
@@ -62,7 +57,7 @@ Item {
                     Layout.alignment: Qt.AlignVCenter
                 }
 
-                // Tên file bài hát
+                // File's name
                 Text {
                     text: {
                         var str = modelData;
@@ -77,9 +72,7 @@ Item {
                 }
             }
 
-            onClicked: {
-                queueTabRoot.itemSelected(index)
-            }
+            onClicked: queueTabRoot.itemSelected(index)
         }
     }
 }

@@ -2,27 +2,21 @@
 #include <QFileInfo>
 #include <QDir>
 
-PlayerController::PlayerController(QObject *parent)
-    : QObject(parent)
-{
+PlayerController::PlayerController(QObject *parent) : QObject(parent) {
     player = new MusicPlayer(this);
 
     resetLoopMode();
 
     // Timestamp
-    connect(player, &MusicPlayer::positionChanged,
-            this, &PlayerController::positionChanged);
+    connect(player, &MusicPlayer::positionChanged, this, &PlayerController::positionChanged);
 
-    connect(player, &MusicPlayer::durationChanged,
-            this, &PlayerController::durationChanged);
+    connect(player, &MusicPlayer::durationChanged, this, &PlayerController::durationChanged);
 
     // Auto play
-    connect(player, &MusicPlayer::mediaFinished,
-            this, &PlayerController::handleEndOfMedia);
+    connect(player, &MusicPlayer::mediaFinished, this, &PlayerController::handleEndOfMedia);
 
     //Toggle play
-    connect(player, &MusicPlayer::stateChanged,
-            this, &PlayerController::handlePlayerStateChanged);
+    connect(player, &MusicPlayer::stateChanged, this, &PlayerController::handlePlayerStateChanged);
 }
 
 /*
@@ -59,8 +53,7 @@ void PlayerController::openFolder(const QString &folderPath)
 /*
 SongPlay Group
 */
-void PlayerController::playPrevious()
-{
+void PlayerController::playPrevious() {
     QString prev = queue.previous();
     if (prev.isEmpty())
         return;
@@ -68,16 +61,14 @@ void PlayerController::playPrevious()
     playCurrent();
 }
 
-void PlayerController::togglePlay()
-{
+void PlayerController::togglePlay() {
     if (queue.isEmpty())
         return;
 
     player->toggle();
 }
 
-void PlayerController::playNext()
-{
+void PlayerController::playNext() {
     QString next = queue.next();
     if (next.isEmpty())
         return;
@@ -85,13 +76,19 @@ void PlayerController::playNext()
     playCurrent();
 }
 
-QString PlayerController::currentSong() const
-{
+void PlayerController::playAt(int index) {
+    queue.setIndex(index);
+
+    emit indexChanged(index);
+
+    playCurrent();
+}
+
+QString PlayerController::currentSong() const {
     return queue.current();
 }
 
-int PlayerController::currentIndex() const
-{
+int PlayerController::currentIndex() const {
     return queue.getIndex();
 }
 
@@ -100,8 +97,7 @@ bool PlayerController::isPlaying() const {
 }
 
 
-void PlayerController::handlePlayerStateChanged(QMediaPlayer::PlaybackState state)
-{
+void PlayerController::handlePlayerStateChanged(QMediaPlayer::PlaybackState state) {
     bool playing = (state == QMediaPlayer::PlayingState);
 
     if (m_isPlaying != playing) {
@@ -110,8 +106,7 @@ void PlayerController::handlePlayerStateChanged(QMediaPlayer::PlaybackState stat
     }
 }
 
-void PlayerController::playCurrent()
-{
+void PlayerController::playCurrent() {
     QString file = queue.current();
     if (file.isEmpty())
         return;
@@ -127,8 +122,7 @@ void PlayerController::playCurrent()
     emit indexChanged(queue.getIndex());
 }
 
-void PlayerController::handleEndOfMedia()
-{
+void PlayerController::handleEndOfMedia() {
     if (queue.getLoopMode() == LoopMode::LoopOne) {
         playCurrent();
         return;
@@ -145,8 +139,7 @@ void PlayerController::handleEndOfMedia()
 /*
 Timestamp Group
 */
-void PlayerController::setPosition(qint64 position)
-{
+void PlayerController::setPosition(qint64 position) {
     player->setPosition(position);
 }
 
@@ -161,8 +154,7 @@ qint64 PlayerController::duration() const {
 /*
 Volume Group
 */
-void PlayerController::setVolume(int value)
-{
+void PlayerController::setVolume(int value) {
     if (m_volume != value) {
         m_volume = value;
 
@@ -173,8 +165,7 @@ void PlayerController::setVolume(int value)
     }
 }
 
-void PlayerController::toggleMute()
-{
+void PlayerController::toggleMute() {
     if (m_volume > 0) {
         m_previousVolume = m_volume;
         setVolume(0);
@@ -190,14 +181,12 @@ int PlayerController::volume() const {
 /*
 Loop Group
 */
-void PlayerController::resetLoopMode()
-{
+void PlayerController::resetLoopMode() {
     queue.setLoopMode(LoopMode::NoLoop);
     emit loopModeChanged(PlayerController::NoLoop);
 }
 
-void PlayerController::cycleLoopMode()
-{
+void PlayerController::cycleLoopMode() {
     LoopMode mode = queue.getLoopMode();
 
     switch (mode) {

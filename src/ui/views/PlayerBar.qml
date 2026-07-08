@@ -1,3 +1,5 @@
+import Blueberry_Wolfz
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -14,28 +16,24 @@ Rectangle {
             return String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
     }
 
-    Slider {
-        id: topProgressBar
+    // Name demo
+    function getFileName(path) {
+        if (!path) return "";
+        return path.substring(path.lastIndexOf("/") + 1);
+    }
+
+    ProgressBar {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         height: 6
         from: 0
-        to: playerController.duration
-        value: playerController.position
+        to: PlayerController.duration
+        value: PlayerController.position
 
-        onMoved: playerController.setPosition(value)
+        updateOnDrag: false
 
-        background: Rectangle {
-            height: 4
-            color: "#313244"
-            Rectangle {
-                width: topProgressBar.visualPosition * parent.width
-                height: parent.height
-                color: "#f38ba8"
-            }
-        }
-        handle: Rectangle { visible: false }
+        onReleased: (newValue) => PlayerController.setPosition(newValue)
     }
 
     RowLayout {
@@ -47,9 +45,13 @@ Rectangle {
 
         RowLayout {
             Layout.fillWidth: true
-            Layout.minimumWidth: 120
             spacing: 12
             Layout.alignment: Qt.AlignLeft
+
+            property bool showText: playerBarRoot.width > 550
+            Layout.minimumWidth: showText ? 120 : 60
+            Layout.preferredWidth: playerBarRoot.width * 0.4
+            Layout.maximumWidth: playerBarRoot.width * 0.4
 
             Rectangle {
                 id: miniCoverContainer
@@ -59,11 +61,10 @@ Rectangle {
                 color: "#313244"
                 Layout.alignment: Qt.AlignVCenter
 
-                Image {
-                    id: miniCoverArt
-                    anchors.fill: parent
-                    fillMode: Image.PreserveAspectCrop
-                    source: "qrc:/image/assets/images/defaultCoverArt.png"
+                ImageRounded {
+                    size: 45
+                    source: "qrc:/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+                    radius: 4
                 }
             }
 
@@ -71,11 +72,14 @@ Rectangle {
                 Layout.fillWidth: true
                 spacing: 2
                 Layout.alignment: Qt.AlignVCenter
+                visible: parent.showText
 
                 Text {
-                    text: "Unknown"
+                    text: PlayerController.currentSong !== ""
+                        ? playerBarRoot.getFileName(PlayerController.currentSong)
+                        : "Unknown"
                     color: "#cdd6f4"
-                    font.pixelSize: 20
+                    font.pixelSize: 24
                     font.bold: true
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -83,7 +87,7 @@ Rectangle {
                 Text {
                     text: "None"
                     color: "#a6adc8"
-                    font.pixelSize: 12
+                    font.pixelSize: 14
                     font.italic: true
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -92,86 +96,87 @@ Rectangle {
         }
 
         RowLayout {
-            Layout.fillWidth: false
-            Layout.alignment: Qt.AlignCenter
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignLeft
             spacing: 5
 
-            Button {
-                text: "⏮"; font.pixelSize: 20; flat: true
-                onClicked: playerController.playPrevious()
+            IconButton {
+                iconSource: "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonPrevious.svg";
+                onClicked: PlayerController.playPrevious()
             }
 
-            Button {
-                text: playerController.isPlaying ? "⏸" : "▶"
-                font.pixelSize: 30
-                flat: true
-                onClicked: playerController.togglePlay()
+            IconButton {
+                iconSource: PlayerController.isPlaying ? "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonPause.svg"
+                                                       : "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonPlay.svg"
+                iconSize: 40
+                onClicked: PlayerController.togglePlay()
             }
 
-            Button {
-                text: "⏭"; font.pixelSize: 20; flat: true
-                onClicked: playerController.playNext()
+            IconButton {
+                iconSource: "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonNext.svg"
+                onClicked: PlayerController.playNext()
             }
 
             Text {
-                text: playerBarRoot.formatTime(playerController.position) + " / " + playerBarRoot.formatTime(playerController.duration)
-                color: "#a6adc8"
+                text: playerBarRoot.formatTime(PlayerController.position)
+                      + " / " + playerBarRoot.formatTime(PlayerController.duration)
+                color: "White"
                 font.pixelSize: 16
                 Layout.leftMargin: 5
             }
         }
 
+        Item { Layout.fillWidth: true }
+
         RowLayout {
-            Layout.fillWidth: false
             Layout.alignment: Qt.AlignRight
             spacing: 2
 
             Item { Layout.fillWidth: true }
 
-            property bool showVolumeSlider: playerBarRoot.width > 600
-            property bool showExtraButtons: playerBarRoot.width > 750
+            property bool showVolumeSlider: playerBarRoot.width > 680
+            property bool showExtraButton: playerBarRoot.width > 750
 
-            Button {
-                id: loopButton
-                flat: true
-                font.pixelSize: 20
-                text: playerController.loopMode === 1 ? "🔂" : "🔁"
-                opacity: playerController.loopMode !== 0 ? 1.0 : 0.4
-                onClicked: playerController.cycleLoopMode()
+            IconButton {
+                iconSource: PlayerController.loopMode === 0 ? "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonNoLoop.svg"
+                    : PlayerController.loopMode === 1 ? "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonLoopOne.svg"
+                                                      : "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonLoopAll.svg"
+
+                onClicked: PlayerController.cycleLoopMode()
             }
 
-            Button {
-                id: muteButton
-                flat: true
-                font.pixelSize: 20
-                text: {
-                    let vol = playerController.volume;
-                    if (vol === 0) return "🔇";
-                    else if (vol < 50) return "🔉";
-                    else return "🔊";
+            IconButton {
+                iconSource: {
+                    let vol = PlayerController.volume;
+                    if (vol === 0) return "qrc:/Blueberry_Wolfz/src/ui/assets/icons/volumeMuted.svg";
+                    else if (vol < 50) return "qrc:/Blueberry_Wolfz/src/ui/assets/icons/volumeMid.svg";
+                    else return "qrc:/Blueberry_Wolfz/src/ui/assets/icons/volumeFull.svg";
                 }
-                onClicked: playerController.toggleMute()
+                onClicked: PlayerController.toggleMute()
             }
 
-            Slider {
+            ProgressBar {
                 id: volumeSlider
+                Layout.preferredWidth: 150
+                Layout.alignment: Qt.AlignVCenter
+                Layout.fillWidth: false
+                visible: parent.showVolumeSlider
+
                 from: 0
                 to: 100
-                value: playerController.volume
-                Layout.preferredWidth: 150
-                Layout.leftMargin: 5
-                Layout.alignment: Qt.AlignVCenter
-                onMoved: playerController.volume = value
-                visible: parent.showVolumeSlider
+                value: PlayerController.volume
+
+                alwaysShowHandle: true
+                updateOnDrag: true
+
+                onMoved: (newValue) => PlayerController.volume = newValue
+                onReleased: (newValue) => PlayerController.volume = newValue
             }
 
-            Button {
-                id: moreOptionsButton
-                flat: true
-                font.pixelSize: 18
-                text: "•••"
-                Layout.leftMargin: 5
-                visible: parent.showExtraButtons
+            IconButton {
+                iconSource: "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonMore.svg"
+                Layout.leftMargin: 8
+                visible: parent.showExtraButton
             }
         }
     }

@@ -38,32 +38,12 @@ Rectangle {
             }
         }
 
-        // Library
-        Rectangle {
+        Library {
             id: libraryViewPage
-            color: "#1e1e2e"
-
-            Text {
-                text: "📚 YOUR LIBRARY\n(WIP)"
-                color: "#cdd6f4"
-                font.pixelSize: 20
-                horizontalAlignment: Text.AlignHCenter
-                anchors.centerIn: parent
-            }
         }
 
-        // About
-        Rectangle {
+        About {
             id: aboutViewPage
-            color: "#11111b"
-
-            Text {
-                text: "ℹ️ MUSIC PLAYER v1.0\nMade with Qt QML"
-                color: "#a6adc8"
-                font.pixelSize: 16
-                horizontalAlignment: Text.AlignHCenter
-                anchors.centerIn: parent
-            }
         }
     }
 }

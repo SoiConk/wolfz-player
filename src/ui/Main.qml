@@ -7,7 +7,7 @@ import "views"
 ApplicationWindow {
     id: root
     width: 1020
-    height: 680
+    height: 600
     visible: true
     minimumWidth: 500
     minimumHeight: 580

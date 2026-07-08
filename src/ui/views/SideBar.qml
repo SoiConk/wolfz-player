@@ -1,3 +1,5 @@
+import "../components"
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -6,7 +8,7 @@ Rectangle {
     id: sideBarRoot
     color: "#181825"
 
-    // property for Main.qml to control which content to show (0: Home, 1: Library, 2: About)
+    // Property for Main.qml to control which content to show (0: Home, 1: Library, 2: About)
     property int currentMenuIndex: 0
 
     // Mini sidebar check
@@ -14,107 +16,35 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.topMargin: 20
+        anchors.topMargin: 5
         anchors.leftMargin: 10
         anchors.rightMargin: 10
         spacing: 8
 
         //Home
-        Button {
-            id: homeBtn
-            Layout.fillWidth: true
-            Layout.preferredHeight: 45
-            flat: true
-
-            background: Rectangle {
-                color: sideBarRoot.currentMenuIndex === 0 ? "#313244" : "transparent"
-                radius: 6
-            }
-
-            contentItem: RowLayout {
-                spacing: sideBarRoot.isCollapsed ? 0 : 12
-
-                Text {
-                    text: "🏠"
-                    font.pixelSize: 18
-                    color: sideBarRoot.currentMenuIndex === 0 ? "#cdd6f4" : "#a6adc8"
-                    Layout.alignment: sideBarRoot.isCollapsed ? Qt.AlignCenter : Qt.AlignLeft
-                }
-                Text {
-                    text: "Home"
-                    font.pixelSize: 14
-                    font.bold: sideBarRoot.currentMenuIndex === 0
-                    color: sideBarRoot.currentMenuIndex === 0 ? "#cdd6f4" : "#a6adc8"
-
-                    visible: !sideBarRoot.isCollapsed
-
-                    Layout.fillWidth: true
-                }
-            }
+        CustomButton {
+            text: "Home"
+            iconSource: "qrc:/Blueberry_Wolfz/src/ui/assets/icons/home.svg"
+            isActive: sideBarRoot.currentMenuIndex === 0
+            isCollapsed: sideBarRoot.isCollapsed
             onClicked: sideBarRoot.currentMenuIndex = 0
         }
 
         // Library
-        Button {
-            id: libraryBtn
-            Layout.fillWidth: true
-            Layout.preferredHeight: 45
-            flat: true
-            background: Rectangle {
-                color: sideBarRoot.currentMenuIndex === 1 ? "#313244" : "transparent"
-                radius: 6
-            }
-            contentItem: RowLayout {
-                spacing: sideBarRoot.isCollapsed ? 0 : 12
-                Text {
-                    text: "📚"
-                    font.pixelSize: 18
-                    color: sideBarRoot.currentMenuIndex === 1 ? "#cdd6f4" : "#a6adc8"
-                    Layout.alignment: sideBarRoot.isCollapsed ? Qt.AlignCenter : Qt.AlignLeft
-                }
-                Text {
-                    text: "Library"
-                    font.pixelSize: 14
-                    font.bold: sideBarRoot.currentMenuIndex === 1
-                    color: sideBarRoot.currentMenuIndex === 1 ? "#cdd6f4" : "#a6adc8"
-
-                    visible: !sideBarRoot.isCollapsed
-
-                    Layout.fillWidth: true
-                }
-            }
+        CustomButton {
+            text: "Library"
+            iconSource: "qrc:/Blueberry_Wolfz/src/ui/assets/icons/library.svg"
+            isActive: sideBarRoot.currentMenuIndex === 1
+            isCollapsed: sideBarRoot.isCollapsed
             onClicked: sideBarRoot.currentMenuIndex = 1
         }
 
-        // About
-        Button {
-            id: aboutBtn
-            Layout.fillWidth: true
-            Layout.preferredHeight: 45
-            flat: true
-            background: Rectangle {
-                color: sideBarRoot.currentMenuIndex === 2 ? "#313244" : "transparent"
-                radius: 6
-            }
-            contentItem: RowLayout {
-                spacing: sideBarRoot.isCollapsed ? 0 : 12
-                Text {
-                    text: "ℹ️"
-                    font.pixelSize: 18
-                    color: sideBarRoot.currentMenuIndex === 2 ? "#cdd6f4" : "#a6adc8"
-                    Layout.alignment: sideBarRoot.isCollapsed ? Qt.AlignCenter : Qt.AlignLeft
-                }
-                Text {
-                    text: "About"
-                    font.pixelSize: 14
-                    font.bold: sideBarRoot.currentMenuIndex === 2
-                    color: sideBarRoot.currentMenuIndex === 2 ? "#cdd6f4" : "#a6adc8"
-
-                    visible: !sideBarRoot.isCollapsed
-
-                    Layout.fillWidth: true
-                }
-            }
+        //About
+        CustomButton {
+            text: "About"
+            iconSource: "qrc:/Blueberry_Wolfz/src/ui/assets/icons/about.svg"
+            isActive: sideBarRoot.currentMenuIndex === 2
+            isCollapsed: sideBarRoot.isCollapsed
             onClicked: sideBarRoot.currentMenuIndex = 2
         }
 

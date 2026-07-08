@@ -12,9 +12,9 @@ Item {
     signal playRequested(string filePath)
 
     Text {
-        text: "📜 Lịch sử phát trống"
+        text: "EMPTY"
         color: "#6c7086"
-        font.pixelSize: 13
+        font.pixelSize: 40
         anchors.centerIn: parent
         visible: historyListView.count === 0
     }
@@ -32,9 +32,15 @@ Item {
             width: historyListView.width
             height: 40
 
+            readonly property bool isCurrentPlaying: index === 0
+
             background: Rectangle {
-                color: historyItem.hovered ? "#252538" : "transparent"
+                color: historyItem.isCurrentPlaying
+                    ? "#2e3148"
+                    : historyItem.hovered ? "#252538" : "transparent"
                 radius: 4
+                border.color: historyItem.isCurrentPlaying ? "#f38ba8" : "transparent"
+                border.width: 1
             }
 
             contentItem: RowLayout {
@@ -45,7 +51,7 @@ Item {
 
                 Text {
                     text: "↩"
-                    color: "#a6adc8"
+                    color: historyItem.isCurrentPlaying ? "#f38ba8" : "#a6adc8"
                     font.pixelSize: 14
                     Layout.alignment: Qt.AlignVCenter
                 }
@@ -55,7 +61,7 @@ Item {
                         var str = modelData;
                         return str.substring(str.lastIndexOf("/") + 1);
                     }
-                    color: "#cdd6f4"
+                    color: historyItem.isCurrentPlaying ? "#f38ba8" : "#cdd6f4"
                     font.pixelSize: 13
                     elide: Text.ElideRight
                     Layout.fillWidth: true

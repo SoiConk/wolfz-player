@@ -7,10 +7,13 @@
 #include "data/model/LoopMode.h"
 
 #include <QObject>
+#include <QtQml>
 
 class PlayerController : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
 
     Q_PROPERTY(QString currentSong READ currentSong NOTIFY songChanged)
     Q_PROPERTY(int currentIndex READ currentIndex NOTIFY indexChanged)
@@ -45,6 +48,7 @@ public:
     Q_INVOKABLE void playPrevious();
     Q_INVOKABLE void togglePlay();
     Q_INVOKABLE void playNext();
+    Q_INVOKABLE void playAt(int index);
     QString currentSong() const;
     int currentIndex() const;
     bool isPlaying() const;

@@ -1,3 +1,5 @@
+import Blueberry_Wolfz
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -9,21 +11,21 @@ Rectangle {
     border.width: 1
 
     Connections {
-        target: playerController
+        target: PlayerController
 
-        onHistoryUpdated: (list) => {
+        function onHistoryUpdated(list) {
             historyTab.historyList = list
         }
     }
 
     Connections {
-        target: playerController
+        target: PlayerController
 
-        onQueueUpdated: (list) => {
+        function onQueueUpdated(list) {
             queueTab.queueList = list
         }
 
-        onIndexChanged: (index) => {
+        function onIndexChanged(index) {
             queueTab.currentPlayingIndex = index
         }
     }
@@ -96,24 +98,29 @@ Rectangle {
             currentIndex: groupPanelRoot.currentGroupTab
             clip: true
 
+             // index 0
             HistoryTab {
                 id: historyTab
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                onPlayRequested: (filePath) => {
-                    playerController.openFile(filePath)
-                }
-            } // index 0
+                onPlayRequested: (filePath) => PlayerController.openFile(filePath)
+            }
+
+            // index 1
             QueueTab {
                 id: queueTab
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-            }   // index 1
+
+                onItemSelected: (index) => PlayerController.playAt(index)
+            }
+
+            // index 2
             LyricsTab {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-            }  // index 2
+            }
         }
     }
 }
