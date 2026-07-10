@@ -1,35 +1,47 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include "data/model/LoopMode.h"
-
 #include <QStringList>
+#include <QObject>
 
-class Queue
+class Queue : public QObject
 {
+    Q_OBJECT
+
 public:
-    const QStringList getList();
-    void add(const QString &file);
-    void addFolder(const QString &folderPath);
+    static Queue& getInstance();
+
+    const QStringList &getList() const;
+    const QString &getPath(int index) const;
+
+    void add(const QString &path);
+    void addFolder(const QStringList &folderPath);
 
     QString current() const;
-    QString next();
-    QString previous();
+    bool next();
+    bool previous();
+
+    void setLoop(bool isLoop);
 
     bool isEmpty() const;
 
-    void setLoopMode(LoopMode mode);
-    LoopMode getLoopMode() const;
-
-    void setIndex(int i);
+    bool setIndex(int i);
     int getIndex() const;
 
     int size() const;
 
+signals:
+    void changed();
+
 private:
+    Queue() = default;
+
+    Queue(const Queue&) = delete;
+    Queue& operator=(const Queue&) = delete;
+
     QStringList list;
     int index = -1;
-    LoopMode loopMode = LoopMode::NoLoop;
+    bool isLoop = false;
 };
 
 #endif

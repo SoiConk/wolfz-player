@@ -23,7 +23,7 @@ Rectangle {
             if (path.startsWith("file:///")) {
                 path = path.substring(8);
             }
-            PlayerController.openFile(path);
+            MusicLoader.openFile(path);
         }
     }
 
@@ -36,7 +36,7 @@ Rectangle {
             if (path.startsWith("file:///")) {
                 path = path.substring(8);
             }
-            PlayerController.openFolder(path);
+            MusicLoader.openFolder(path);
         }
     }
 
@@ -77,7 +77,6 @@ Rectangle {
         // Item for spacer
         Item { Layout.fillWidth: true }
 
-        // Cụm bên phải: Gồm phần 3 và phần 2 sát nhau
         RowLayout {
             spacing: 12
 

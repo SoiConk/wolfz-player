@@ -75,9 +75,7 @@ Rectangle {
                 visible: parent.showText
 
                 Text {
-                    text: PlayerController.currentSong !== ""
-                        ? playerBarRoot.getFileName(PlayerController.currentSong)
-                        : "Unknown"
+                    text: "Unknown"
                     color: "#cdd6f4"
                     font.pixelSize: 24
                     font.bold: true

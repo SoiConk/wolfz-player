@@ -1,11 +1,12 @@
 #include "PlayerController.h"
-#include <QFileInfo>
-#include <QDir>
+#include <data/playlist/Queue.h>
+#include "data/playlist/History.h"
 
 PlayerController::PlayerController(QObject *parent) : QObject(parent) {
     player = new MusicPlayer(this);
 
-    resetLoopMode();
+    // Song add
+    connect(&Queue::getInstance(), &Queue::changed, this, &PlayerController::playCurrent);
 
     // Timestamp
     connect(player, &MusicPlayer::positionChanged, this, &PlayerController::positionChanged);
@@ -20,143 +21,107 @@ PlayerController::PlayerController(QObject *parent) : QObject(parent) {
 }
 
 /*
-OpenPath Group
-*/
-void PlayerController::openFile(const QString &filePath)
-{
-    if (filePath.isEmpty())
-        return;
-
-    queue.add(filePath);
-
-    emit queueUpdated(queue.getList());
-    emit indexChanged(queue.getIndex());
-
-    playCurrent();
-}
-
-void PlayerController::openFolder(const QString &folderPath)
-{
-    if (folderPath.isEmpty())
-        return;
-
-    queue.addFolder(folderPath);
-    if (queue.isEmpty())
-        return;
-
-    emit queueUpdated(queue.getList());
-    emit indexChanged(queue.getIndex());
-
-    playCurrent();
-}
-
-/*
 SongPlay Group
 */
-void PlayerController::playPrevious() {
-    QString prev = queue.previous();
-    if (prev.isEmpty())
-        return;
-
-    playCurrent();
+void PlayerController::playPrevious()
+{
+    if (Queue::getInstance().previous())
+        playCurrent();
 }
 
-void PlayerController::togglePlay() {
-    if (queue.isEmpty())
+void PlayerController::togglePlay()
+{
+    int index = currentIndex();
+    if (index < 0)
         return;
 
     player->toggle();
 }
 
-void PlayerController::playNext() {
-    QString next = queue.next();
-    if (next.isEmpty())
-        return;
-
-    playCurrent();
+void PlayerController::playNext()
+{
+    if (Queue::getInstance().next())
+        playCurrent();
 }
 
-void PlayerController::playAt(int index) {
-    queue.setIndex(index);
-
-    emit indexChanged(index);
-
-    playCurrent();
+void PlayerController::playAt(int index)
+{
+    if (Queue::getInstance().setIndex(index))
+        playCurrent();
 }
 
-QString PlayerController::currentSong() const {
-    return queue.current();
+QString PlayerController::currentSong() const
+{
+    return Queue::getInstance().getPath(currentIndex());
 }
 
-int PlayerController::currentIndex() const {
-    return queue.getIndex();
+int PlayerController::currentIndex() const
+{
+    return Queue::getInstance().getIndex();
 }
 
-bool PlayerController::isPlaying() const {
-    return m_isPlaying;
+bool PlayerController::isPlayingState() const
+{
+    return isPlaying;
 }
 
 
-void PlayerController::handlePlayerStateChanged(QMediaPlayer::PlaybackState state) {
+void PlayerController::handlePlayerStateChanged(QMediaPlayer::PlaybackState state)
+{
     bool playing = (state == QMediaPlayer::PlayingState);
 
-    if (m_isPlaying != playing) {
-        m_isPlaying = playing;
+    if (isPlaying != playing) {
+        isPlaying = playing;
         emit playingChanged();
     }
 }
 
-void PlayerController::playCurrent() {
-    QString file = queue.current();
+void PlayerController::playCurrent()
+{
+    QString file = Queue::getInstance().current();
     if (file.isEmpty())
         return;
-
     player->load(file);
     player->play();
 
-    history.add(file);
-    emit historyUpdated(history.getAll());
-
-
-    emit songChanged(file);
-    emit indexChanged(queue.getIndex());
+    History::getInstance().add(file);
 }
 
-void PlayerController::handleEndOfMedia() {
-    if (queue.getLoopMode() == LoopMode::LoopOne) {
+void PlayerController::handleEndOfMedia()
+{
+    if (loopMode == LoopMode::LoopOne) {
         playCurrent();
         return;
     }
 
-    QString next = queue.next();
-
-    if (next.isEmpty())
-        return;
-
-    playCurrent();
+    playNext();
 }
 
 /*
 Timestamp Group
 */
-void PlayerController::setPosition(qint64 position) {
+void PlayerController::setPosition(qint64 position)
+{
     player->setPosition(position);
 }
 
-qint64 PlayerController::position() const {
+qint64 PlayerController::position() const
+{
     return player->position();
 }
 
-qint64 PlayerController::duration() const {
+qint64 PlayerController::duration() const
+{
     return player->duration();
 }
 
 /*
 Volume Group
 */
-void PlayerController::setVolume(int value) {
-    if (m_volume != value) {
-        m_volume = value;
+void PlayerController::setVolume(int value)
+{
+    if (volume != value) {
+        volume = value;
 
         float vol = value / 100.0f;
         player->setVolume(vol);
@@ -165,40 +130,45 @@ void PlayerController::setVolume(int value) {
     }
 }
 
-void PlayerController::toggleMute() {
-    if (m_volume > 0) {
-        m_previousVolume = m_volume;
+void PlayerController::toggleMute()
+{
+    if (volume > 0) {
+        previousVolume = volume;
         setVolume(0);
     } else {
-        setVolume(m_previousVolume);
+        setVolume(previousVolume);
     }
 }
 
-int PlayerController::volume() const {
-    return m_volume;
+int PlayerController::getVolume() const
+{
+    return volume;
 }
 
 /*
 Loop Group
 */
-void PlayerController::resetLoopMode() {
-    queue.setLoopMode(LoopMode::NoLoop);
-    emit loopModeChanged(PlayerController::NoLoop);
-}
-
-void PlayerController::cycleLoopMode() {
-    LoopMode mode = queue.getLoopMode();
-
-    switch (mode) {
-    case LoopMode::NoLoop:  mode = LoopMode::LoopAll; break;
-    case LoopMode::LoopAll: mode = LoopMode::LoopOne; break;
-    case LoopMode::LoopOne: mode = LoopMode::NoLoop; break;
+void PlayerController::cycleLoopMode()
+{
+    switch (loopMode) {
+    case LoopMode::NoLoop:
+        loopMode = LoopMode::LoopAll;
+        Queue::getInstance().setLoop(true);
+        break;
+    case LoopMode::LoopAll:
+        loopMode = LoopMode::LoopOne;
+        Queue::getInstance().setLoop(false);
+        break;
+    case LoopMode::LoopOne:
+        loopMode = LoopMode::NoLoop;
+        Queue::getInstance().setLoop(false);
+        break;
     }
 
-    queue.setLoopMode(mode);
-    emit loopModeChanged(static_cast<PlayerController::QmlLoopMode>(mode));
+    emit loopModeChanged(loopMode);
 }
 
-PlayerController::QmlLoopMode PlayerController::loopMode() const {
-    return static_cast<QmlLoopMode>(queue.getLoopMode());
+PlayerController::LoopMode PlayerController::getLoopMode() const
+{
+    return loopMode;
 }

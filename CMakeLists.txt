@@ -13,19 +13,26 @@ find_package(Qt6 REQUIRED COMPONENTS Quick Multimedia)
 
 set(PROJECT_SOURCES
         src/main.cpp
+
         src/control/logic/PlayerController.h
         src/control/logic/PlayerController.cpp
+        src/control/logic/MusicLoader.h
+        src/control/logic/MusicLoader.cpp
+
         src/control/service/MetadataManager.cpp
         src/control/service/MetadataManager.h
+
         src/data/player/MusicPlayer.cpp
         src/data/player/MusicPlayer.h
+
         src/data/playlist/Queue.cpp
         src/data/playlist/Queue.h
         src/data/playlist/History.cpp
         src/data/playlist/History.h
+
         src/data/model/Song.h
         src/data/model/Song.cpp
-        src/data/model/LoopMode.h
+
 )
 
 if(WIN32)

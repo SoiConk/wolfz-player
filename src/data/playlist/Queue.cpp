@@ -1,80 +1,82 @@
 #include "Queue.h"
-#include <QDir>
-#include <QFileInfoList>
 
-const QStringList Queue::getList(){
+Queue& Queue::getInstance()
+{
+    static Queue instance;
+    return instance;
+}
+
+const QStringList &Queue::getList() const
+{
     return list;
 }
 
-void Queue::add(const QString &file)
-{
-    list.clear();
-    list.append(file);
-    index = 0;
+const QString &Queue::getPath(int index) const {
+    return list[index];
 }
 
-void Queue::addFolder(const QString &folderPath)
+void Queue::add(const QString &path)
 {
-    QDir dir(folderPath);
+    list = { path };
+    index = 0;
 
-    QStringList filters;
-    filters << "*.mp3" << "*.wav";
+    emit changed();
+}
 
-    QFileInfoList files = dir.entryInfoList(filters, QDir::Files, QDir::Name);
-    QStringList tempList;
+void Queue::addFolder(const QStringList &listPath)
+{
+    if (listPath == list)
+        return;
+    list = listPath;
+    index = 0;
 
-    for (const QFileInfo &file : std::as_const(files)) {
-        tempList.append(file.absoluteFilePath());
-    }
-
-    if (!tempList.isEmpty()){
-        list = tempList;
-        index = 0;
-    }
+    emit changed();
 }
 
 QString Queue::current() const
 {
     if (index < 0 || index >= list.size())
-        return "";
-
+        return {};
     return list[index];
 }
 
-QString Queue::next()
+bool Queue::previous()
 {
-    if (list.isEmpty()) return "";
+    if (index < 0) return false;
 
-    index++;
-
-    if (index >= list.size()) {
-        if (loopMode == LoopMode::LoopAll)
-            index = 0;
-        else {
+    if (index == 0) {
+        if (isLoop) {
             index = list.size() - 1;
-            return "";
+            return true;
+        } else {
+            return false;
         }
     }
-
-    return current();
-}
-
-QString Queue::previous()
-{
-    if (list.isEmpty()) return "";
 
     index--;
+    return true;
+}
 
-    if (index < 0) {
-        if (loopMode == LoopMode::LoopAll)
-            index = list.size() - 1;
-        else {
+bool Queue::next()
+{
+    if (index < 0) return false;
+
+    if (index == list.size() - 1) {
+        if (isLoop) {
             index = 0;
-            return "";
+            return true;
+        } else {
+            return false;
         }
     }
 
-    return current();
+    index++;
+    return true;
+}
+
+void Queue::setLoop(bool isLoop)
+{
+    this->isLoop = isLoop;
 }
 
 bool Queue::isEmpty() const
@@ -82,20 +84,12 @@ bool Queue::isEmpty() const
     return list.isEmpty();
 }
 
-void Queue::setLoopMode(LoopMode mode)
+bool Queue::setIndex(int i)
 {
-    loopMode = mode;
-}
-
-LoopMode Queue::getLoopMode() const
-{
-    return loopMode;
-}
-
-void Queue::setIndex(int i)
-{
-    if (i >= 0 && i < list.size())
-        index = i;
+    if (i == index)
+        return false;
+    index = i;
+    return true;
 }
 
 int Queue::getIndex() const
