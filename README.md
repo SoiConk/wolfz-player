@@ -1,148 +1,232 @@
 # 🎵 Blueberry Wolfz
 
-A modern UI **desktop music player** built with **C++ and Qt Quick (QML)**, focused on performance, clean architecture, and building a responsive UI.
+Blueberry Wolfz is a desktop music player built with **C++ and Qt Quick (QML)**.
 
-Blueberry Wolfz is built to explore how a modern desktop music player can be designed using a QML frontend and a C++ backend while maintaining clean separation between UI and application logic.
+This project started as a way to learn how to build a complete desktop application using Qt, while exploring QML for the user interface and C++ for the application logic.
 
-This project is developed as a **learning-driven application**, exploring how a music player is structured using a **QML frontend with a C++ backend**.
+The main goal of this project is not only creating a music player, but also learning how to design a maintainable application with a clear separation between UI, data, and core logic.
 
-Learning how to design efficient data structures and application architecture with modern C++.
-
-> ⚠️ Status: Early development (Work in Progress)
+> ⚠️ Status: Work in Progress
 
 ---
 
-## ✨ Overview
+## ✨ About
 
-Blueberry Wolfz Player aims to become a **lightweight and extensible local music player**, with a strong focus on:
+Blueberry Wolfz is a local music player designed around a simple idea:
 
-* Declarative UI with QML
-* Separation between UI and core logic
-* Smooth and responsive user experience
-* Scalable project architecture
+- Keep the interface flexible and modernized with QML.
+- Handle application logic with C++
+- Store and manage user data efficiently
+- Build an architecture that can grow with future features
+- Work well with HD and FHD resolutions
+
+The project is still under development, so some parts of the application may change over time.
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Language:** C++
-* **UI Framework:** Qt Quick (QML)
-* **Backend:** Qt (Multimedia, Core)
-* **Architecture:** QML (UI) + C++ (logic layer)
+- **Language:** C++17
+- **UI Framework:** Qt Quick / QML
+- **Framework:** Qt 6
+  - Qt Core
+  - Qt Multimedia
+  - Qt SQL
+  - Qt Quick
+- **Database:** SQLite
+- **Metadata:** TagLib
+- **Build System:** CMake
+
+Currently developed and tested on:
+
+- Windows 10/11
+
+Linux and macOS builds are planned but have not been fully tested yet.
 
 ---
 
 ## 🚀 Current Features
 
-* Basic audio playback
-* Playlist management
-* Volume control
-* QML-based UI (in progress)
+Currently implemented:
+
+- Local audio playback
+- Play / Pause / Stop control
+- Volume control
+- Playlist management
+- Single loop and queue loop
+- Queue system
+- Playback history
+- QML-based user interface
+- C++ backend exposed to QML
+- Local database storage
+
+More features will be added during development.
 
 ---
 
 ## 📁 Project Structure
 
-```id="9r2hxm"
-/src
-  /ui          # QML UI (views, components)
-  /control     # Controllers / business logic
-  /data        # Models, player, playlist, metadata
-/assets        # Images, icons
+```text
+Blueberry_Wolfz
+│
+├── src
+│   │
+│   ├── main.cpp           # Application initialization
+│   │
+│   ├── ui
+│   │   ├── Main.qml       # App entry point
+│   │   ├── assets         # UI-related resources
+│   │   ├── components     # Reusable QML components
+│   │   ├── subviews       # Small, modular UI sections
+│   │   └── views          # Main screens & layouts
+│   │
+│   ├── control
+│   │   ├── controllers    # Button control and logic
+│   │   └── services       # Database and info logic
+│   │
+│   ├── data
+│   │   ├── models         # Data models
+│   │   └── playlist       # Playlist, queue, history
+│   │
+│   └── player             # Audio playback related classes
+│
+├── CMakeLists.txt
+│
+└── README.md
+
+---
+
+## 💾 Application Data Storage
+
+Blueberry Wolfz stores user data separately from the application installation directory.
+
+On Windows, application data is stored at:
+```
+```plainttext
+%APPDATA%/Blueberry_Wolfz/
 ```
 
-> Structure is evolving as the architecture becomes more defined.
+Used for persistent user data:
+
+```plaintext
+Blueberry_Wolfz/
+│
+└── songs.db
+```
+
+---
+
+```plaintext
+%LOCALAPPDATA%/Blueberry_Wolfz/
+```
+
+Used for local and temporary data:
+
+```plaintext
+Blueberry_Wolfz/
+│
+├── cache/
+│
+└── covers/
+    ├── full/
+    │
+    └── mini/
+```
+
+Separating application data from the installation directory allows:
+
+- User data to remain after application updates
+- The application to be installed in different locations
+- Cache and database files to be managed independently
 
 ---
 
 ## 🧠 Architecture
 
-The project follows a **UI–Logic separation approach**:
+Blueberry Wolfz follows a separation between the UI layer and application logic.
 
-* **QML Layer**
+### QML Layer
 
-  * Handles UI rendering and interaction
-  * Uses bindings and declarative design
+Responsible for:
 
-* **C++ Layer**
+- User interface rendering
+- User interaction
+- UI state binding
+- Animations and visual components
 
-  * Handles playback logic, data models, and state
-  * Exposed to QML via properties and signals
+### C++ Layer
 
-This approach allows:
+Responsible for:
 
-* Better maintainability
-* Clear separation of concerns
-* Easier UI iteration without touching core logic
+- Audio playback control
+- Playlist and queue management
+- Database handling
+- Application services
+- Data processing
 
-
-
----
-
-## 🧭 Roadmap
-
-### Core System
-
-* [x] Basic playback engine
-* [x] Playlist system
-* [x] Volume control
-
-### UI / UX
-
-* [x] Initial QML UI
-* [ ] UI redesign (YouTube Music-inspired)
-* [ ] Animations & transitions refinement
-
-### Features
-
-* [ ] Metadata system (album art, tags)
-* [ ] Playback modes (repeat, shuffle, history)
-* [ ] Image caching (album covers)
-* [x] Queue & history system
-
-### Technical
-
-* [ ] Optimize QML performance
-* [ ] Improve C++ ↔ QML integration
-* [ ] Resource & cache management
-
-### Long-term
-
-* [ ] Cross-platform polish (Windows / macOS / Linux)
-* [ ] Plugin / extensibility system
+QML communicates with C++ through Qt properties, signals, and slots.
 
 ---
 
-## 🛠️ Prerequisites
-* Qt 6.x (Core, Multimedia, QML)
-* CMake 3.x
-* C++17 Compiler
+## 📥 Installation
 
-## 🚀 Build
+### 🪟 Windows
 
-Build instructions are not finalized yet.
-They will be added once the project structure stabilizes.
+Download and run the installer:
+
+```text
+Blueberry_Wolfz_Setup.exe
+```
+
+Follow the installation wizard to install Blueberry Wolfz.
+
+---
+
+### 🐧 Linux / 🍎 macOS
+
+Linux and macOS builds are currently under development.
+
+Native installers are not available yet.
+
+---
+
+## 📝 Things I Want To Improve
+
+Some improvements planned for the future:
+
+- Improve UI design and animations
+- Add better music library management
+- Add metadata reading and album artwork support
+- Improve image caching system
+- Optimize QML performance
+- Improve C++ and QML integration
+- Add better settings management
+- Improve cross-platform support
+- Improve UI responsiveness for high-resolution displays
+
+---
+
+## ⚠️ Notes
+
+This project is mainly created for learning and experimentation.
+
+The codebase may change frequently while exploring better solutions for:
+
+- Qt application architecture
+- Desktop UI design
+- Data management
+- Audio player development
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License**.
+This project is licensed under the MIT License.
 
 ---
 
 ## 👤 Author
 
-* GitHub: https://github.com/SoiConk
+**Sói Con**
 
----
-
-## 💬 Notes
-
-This project is primarily for **learning and experimentation**, especially in:
-
-* QML development
-* UI architecture design
-* Audio application design
-
-The codebase may change frequently as new ideas are explored.
+GitHub: https://github.com/SoiConk
