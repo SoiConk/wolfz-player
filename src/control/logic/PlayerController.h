@@ -12,6 +12,9 @@ class PlayerController : public QObject
     QML_ELEMENT
     QML_SINGLETON
 
+    Q_PROPERTY(qint64 currentSong READ currentSong NOTIFY currentSongChanged)
+    Q_PROPERTY(int currentIndex READ currentIndex NOTIFY currentIndexChanged)
+
     Q_PROPERTY(bool isPlaying READ isPlayingState NOTIFY playingChanged)
 
     Q_PROPERTY(int volume READ getVolume WRITE setVolume NOTIFY volumeChanged)
@@ -38,7 +41,7 @@ public:
     Q_INVOKABLE void togglePlay();
     Q_INVOKABLE void playNext();
     Q_INVOKABLE void playAt(int index);
-    QString currentSong() const;
+    qint64 currentSong();
     int currentIndex() const;
     bool isPlayingState() const;
 
@@ -67,6 +70,8 @@ signals:
     SongPlaying Group
     */
     void playingChanged();
+    void currentSongChanged();
+    void currentIndexChanged();
 
     /*
     Volume Group

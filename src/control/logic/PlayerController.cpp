@@ -1,12 +1,18 @@
 #include "PlayerController.h"
 #include <data/playlist/Queue.h>
 #include "data/playlist/History.h"
+#include "control/service/MetadataManager.h"
 
 PlayerController::PlayerController(QObject *parent) : QObject(parent) {
     player = new MusicPlayer(this);
 
+    if (!Queue::getInstance().isEmpty())
+    {
+        playCurrent();
+    }
+
     // Song add
-    connect(&Queue::getInstance(), &Queue::changed, this, &PlayerController::playCurrent);
+    connect(&Queue::getInstance(), &Queue::changedIndex, this, &PlayerController::playCurrent);
 
     // Timestamp
     connect(player, &MusicPlayer::positionChanged, this, &PlayerController::positionChanged);
@@ -35,7 +41,10 @@ void PlayerController::togglePlay()
     if (index < 0)
         return;
 
-    player->toggle();
+    if (!player->isStop())
+        player->toggle();
+    else
+        playCurrent();
 }
 
 void PlayerController::playNext()
@@ -50,9 +59,11 @@ void PlayerController::playAt(int index)
         playCurrent();
 }
 
-QString PlayerController::currentSong() const
+qint64 PlayerController::currentSong()
 {
-    return Queue::getInstance().getPath(currentIndex());
+    if (currentIndex() < 0)
+        return -1;
+    return Queue::getInstance().getId(currentIndex());
 }
 
 int PlayerController::currentIndex() const
@@ -78,13 +89,15 @@ void PlayerController::handlePlayerStateChanged(QMediaPlayer::PlaybackState stat
 
 void PlayerController::playCurrent()
 {
-    QString file = Queue::getInstance().current();
-    if (file.isEmpty())
-        return;
+    qint64 songId = currentSong();
+    QString file = MetadataManager::getInstance().getPathById(songId);
+
     player->load(file);
     player->play();
 
-    History::getInstance().add(file);
+    History::getInstance().add(songId);
+    emit currentSongChanged();
+    emit currentIndexChanged();
 }
 
 void PlayerController::handleEndOfMedia()

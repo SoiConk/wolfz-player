@@ -1,21 +1,25 @@
 #include "MusicLoader.h"
 #include <data/playlist/Queue.h>
+#include <control/service/MetadataManager.h>
 
 #include <QFileInfo>
 #include <QDir>
+#include <QStandardPaths>
 
 MusicLoader::MusicLoader(QObject *parent) :QObject(parent)
 {
-    connect(this, &MusicLoader::fileLoaded, &Queue::getInstance(), &Queue::add);
+    folder = QUrl::fromLocalFile(QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
 
-    connect(this, &MusicLoader::folderLoaded, &Queue::getInstance(), &Queue::addFolder);
+    connect(&MetadataManager::getInstance(), &MetadataManager::songReady, &Queue::getInstance(), &Queue::add);
+    connect(&MetadataManager::getInstance(), &MetadataManager::queueReady, &Queue::getInstance(), &Queue::addList);
 }
 
 void MusicLoader::openFile(const QString &filePath)
 {
     if (filePath.isEmpty())
         return;
-    emit fileLoaded(filePath);
+
+    MetadataManager::getInstance().processFile(filePath);
 }
 
 void MusicLoader::openFolder(const QString &folderPath)
@@ -25,8 +29,11 @@ void MusicLoader::openFolder(const QString &folderPath)
 
     QDir directory(folderPath);
 
+    folder = QUrl::fromLocalFile(directory.absolutePath());
+    emit lastFolderChanged();
+
     QStringList filters;
-    filters << "*.mp3" << "*.wav";
+    filters << "*.mp3";
 
     QFileInfoList files = directory.entryInfoList(filters, QDir::Files, QDir::Name);
 
@@ -39,5 +46,16 @@ void MusicLoader::openFolder(const QString &folderPath)
     if (tempList.isEmpty()){
         return;
     }
-    emit folderLoaded(tempList);
+
+    MetadataManager::getInstance().processFolder(tempList);
+}
+
+QUrl MusicLoader::lastFolder() const
+{
+    return folder;
+}
+
+void MusicLoader::loadId(qint64 songId)
+{
+    MetadataManager::getInstance().addSongId(songId);
 }
