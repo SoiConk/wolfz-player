@@ -49,6 +49,11 @@ void MusicPlayer::toggle()
         play();
 }
 
+bool MusicPlayer::isStop() const
+{
+    return player->playbackState() == QMediaPlayer::StoppedState;
+}
+
 void MusicPlayer::setVolume(float volume)
 {
     volume = std::clamp(volume, 0.0f, 1.0f);

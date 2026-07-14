@@ -2,23 +2,33 @@
 #define HISTORY_H
 
 #include <QStringList>
+#include <QObjectList>
 
-class History
+class History : public QObject
 {
+    Q_OBJECT
+
 public:
     static History& getInstance();
 
-    void add(const QString &file);
-    QStringList getAll() const;
+    void add(qint64 songId);
+    void addList(QList<qint64> list);
+    QList<qint64> getAll() const;
 
 private:
     History() = default;
+    ~History() = default;
 
     History(const History&) = delete;
+    History(History&&) = delete;
     History& operator=(const History&) = delete;
+    History& operator=(History&&) = delete;
 
-    QStringList list;
+    QList<qint64> list;
     int maxSize = 10;
+
+signals:
+    void changedHistory(QList<qint64> list);
 };
 
 #endif

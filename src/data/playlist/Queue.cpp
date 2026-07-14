@@ -6,34 +6,36 @@ Queue& Queue::getInstance()
     return instance;
 }
 
-const QStringList &Queue::getList() const
+const QList<qint64> &Queue::getList() const
 {
     return list;
 }
 
-const QString &Queue::getPath(int index) const {
+qint64 Queue::getId(int index) const {
     return list[index];
 }
 
-void Queue::add(const QString &path)
+void Queue::add(qint64 id)
 {
-    list = { path };
+    list = { id };
     index = 0;
 
-    emit changed();
+    emit changedIndex(index);
+    emit changed(list);
 }
 
-void Queue::addFolder(const QStringList &listPath)
+void Queue::addList(const QList<qint64> &listId)
 {
-    if (listPath == list)
+    if (listId == list)
         return;
-    list = listPath;
+    list = listId;
     index = 0;
 
-    emit changed();
+    emit changedIndex(index);
+    emit changed(list);
 }
 
-QString Queue::current() const
+qint64 Queue::current() const
 {
     if (index < 0 || index >= list.size())
         return {};
@@ -47,6 +49,7 @@ bool Queue::previous()
     if (index == 0) {
         if (isLoop) {
             index = list.size() - 1;
+            emit changedIndex(index);
             return true;
         } else {
             return false;
@@ -54,6 +57,7 @@ bool Queue::previous()
     }
 
     index--;
+    emit changedIndex(index);
     return true;
 }
 
@@ -64,6 +68,7 @@ bool Queue::next()
     if (index == list.size() - 1) {
         if (isLoop) {
             index = 0;
+            emit changedIndex(index);
             return true;
         } else {
             return false;
@@ -71,6 +76,7 @@ bool Queue::next()
     }
 
     index++;
+    emit changedIndex(index);
     return true;
 }
 
@@ -89,6 +95,7 @@ bool Queue::setIndex(int i)
     if (i == index)
         return false;
     index = i;
+    emit changedIndex(index);
     return true;
 }
 

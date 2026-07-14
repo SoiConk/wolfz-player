@@ -16,6 +16,7 @@ public:
     void play();
     void pause();
     void toggle();
+    bool isStop() const;
 
     void setVolume(float volume);
     void setPosition(qint64 position);

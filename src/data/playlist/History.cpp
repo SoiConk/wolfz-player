@@ -6,16 +6,25 @@ History& History::getInstance()
     return instance;
 }
 
-void History::add(const QString &file)
+void History::add(qint64 songId)
 {
-    list.removeAll(file);
-    list.prepend(file);
+    list.removeAll(songId);
+    list.prepend(songId);
 
     if (list.size() > maxSize)
         list.removeLast();
+    emit changedHistory(list);
 }
 
-QStringList History::getAll() const
+void History::addList(QList<qint64> list)
+{
+    if (list.empty())
+        return;
+    this->list = list;
+    emit changedHistory(list);
+}
+
+QList<qint64> History::getAll() const
 {
     return list;
 }
