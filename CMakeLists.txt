@@ -9,7 +9,15 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Multimedia)
+find_package(Qt6 REQUIRED COMPONENTS
+    Quick
+    QuickControls2
+    Multimedia
+    Sql
+    Concurrent
+)
+
+find_package(TagLib REQUIRED)
 
 set(PROJECT_SOURCES
         src/main.cpp
@@ -21,6 +29,8 @@ set(PROJECT_SOURCES
 
         src/control/service/MetadataManager.cpp
         src/control/service/MetadataManager.h
+        src/control/service/ShowInfo.h
+        src/control/service/ShowInfo.cpp
 
         src/data/player/MusicPlayer.cpp
         src/data/player/MusicPlayer.h
@@ -29,10 +39,11 @@ set(PROJECT_SOURCES
         src/data/playlist/Queue.h
         src/data/playlist/History.cpp
         src/data/playlist/History.h
+        src/data/playlist/Playlist.h
+        src/data/playlist/Playlist.cpp
 
         src/data/model/Song.h
         src/data/model/Song.cpp
-
 )
 
 if(WIN32)
@@ -47,6 +58,7 @@ qt_add_executable(Blueberry_Wolfz
 target_include_directories(Blueberry_Wolfz PUBLIC
     src
     src/control/logic
+    src/control/service
 )
 
 file(GLOB_RECURSE ALL_QML_FILES CONFIGURE_DEPENDS
@@ -73,8 +85,14 @@ qt_add_qml_module(Blueberry_Wolfz
 
 target_link_libraries(Blueberry_Wolfz PRIVATE
     Qt6::Quick
+    Qt6::QuickControls2
     Qt6::Multimedia
+    Qt6::Sql
+    Qt6::Concurrent
+    TagLib::TagLib
 )
+
+target_compile_definitions(Blueberry_Wolfz PRIVATE QT_NO_DEBUG_OUTPUT)
 
 if(WIN32)
     set_target_properties(Blueberry_Wolfz PROPERTIES
