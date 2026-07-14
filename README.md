@@ -10,6 +10,14 @@ The main goal of this project is not only creating a music player, but also lear
 
 ---
 
+## 📸 Preview
+
+<p align="center">
+  <img src="preview.png" width="800"/>
+</p>
+
+---
+
 ## ✨ About
 
 Blueberry Wolfz is a local music player designed around a simple idea:
@@ -230,3 +238,16 @@ This project is licensed under the MIT License.
 **Sói Con**
 
 GitHub: https://github.com/SoiConk
+
+---
+
+## 🎨 Credits
+
+Some default artworks used in this app belong to their respective artists.
+
+- Default Cover Art by [Linn](https://khomimi0708.carrd.co/)
+- App Logo from [とおぼえ ふうすけ](https://potofu.me/tooboe-huusuke)
+- Profile Icon by [Hoshino Chisara
+](https://lit.link/en/tsrdtn)
+- About by [Makiato](https://makiato-art.vercel.app/)
+- Icons by [Lucide](https://lucide.dev)
