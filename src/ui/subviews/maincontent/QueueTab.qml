@@ -1,3 +1,7 @@
+import Blueberry_Wolfz 1.0
+
+import "qrc:/Blueberry_Wolfz/src/ui/components"
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -7,10 +11,7 @@ Item {
     Layout.fillWidth: true
     Layout.fillHeight: true
 
-    property var queueList: []
-    property int currentPlayingIndex: -1
-
-    signal itemSelected(int index)
+    signal itemSelected(int requestedIndex)
 
     Text {
         text: "EMPTY"
@@ -22,11 +23,13 @@ Item {
 
     ListView {
         id: queueListView
+
         anchors.fill: parent
         anchors.margins: 10
         spacing: 4
         clip: true
-        model: queueTabRoot.queueList
+
+        model: QueueModel
 
         delegate: ItemDelegate {
             id: queueItem
@@ -34,11 +37,11 @@ Item {
             height: 45
 
             background: Rectangle {
-                color: (index === queueTabRoot.currentPlayingIndex)
+                color: (index === PlayerController.currentIndex)
                        ? "#2e3148"
                        : (queueItem.hovered ? "#252538" : "transparent")
                 radius: 4
-                border.color: (index === queueTabRoot.currentPlayingIndex) ? "#f38ba8" : "transparent"
+                border.color: (index === PlayerController.currentIndex) ? "#f38ba8" : "transparent"
                 border.width: 1
             }
 
@@ -53,26 +56,65 @@ Item {
                     text: "▶"
                     color: "#f38ba8"
                     font.pixelSize: 11
-                    visible: index === queueTabRoot.currentPlayingIndex
+                    visible: index === PlayerController.currentIndex
                     Layout.alignment: Qt.AlignVCenter
                 }
 
-                // File's name
+                // Minicover
+                ImageRounded {
+                    size: 40
+                    source: ShowInfo.miniCoverPath(Number(modelData))
+                            || "qrc:/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+                    radius: 4
+                }
+
+                // Name
                 Text {
-                    text: {
-                        var str = modelData;
-                        return str.substring(str.lastIndexOf("/") + 1);
-                    }
-                    color: (index === queueTabRoot.currentPlayingIndex) ? "#f38ba8" : "#cdd6f4"
-                    font.bold: index === queueTabRoot.currentPlayingIndex
+                    text: ShowInfo.title(Number(modelData))
+                    color: (index === PlayerController.currentIndex) ? "#f38ba8" : "#cdd6f4"
+                    font.bold: index === PlayerController.currentIndex
                     font.pixelSize: 13
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignVCenter
                 }
+
+                // Duration
+                Text {
+                    text: ShowInfo.duration(Number(modelData))
+
+                    color: "#a6adc8"
+
+                    font.pixelSize: 12
+
+                    Layout.alignment:
+                        Qt.AlignVCenter
+                }
             }
 
-            onClicked: queueTabRoot.itemSelected(index)
+            onClicked: {
+                queueTabRoot.onItemSelected(index)
+            }
+        }
+
+        ScrollBar.vertical: ScrollBar {
+            id: queueScrollBar
+
+            policy: ScrollBar.AsNeeded
+
+            width: 8
+
+            contentItem: Rectangle {
+                implicitWidth: 8
+                radius: 4
+                color: "#6c7086"
+
+                opacity: queueScrollBar.pressed ? 0.9 : 0.5
+            }
+
+            background: Rectangle {
+                color: "transparent"
+            }
         }
     }
 }

@@ -5,11 +5,12 @@ import QtQuick.Controls
 Item {
     id: aboutPageRoot
 
-    anchors.fill: parent
-    anchors.margins: 10
+    Layout.fillWidth: true
+    Layout.fillHeight: true
 
     Rectangle {
         id: card
+
         anchors.centerIn: parent
 
         width: parent.width * 0.9
@@ -66,11 +67,11 @@ Item {
                 Column {
                     spacing: card.innerSpacing
                     Repeater {
-                        model: ["- Simple music player"
-                            , "- Queue and history"
-                            , "- Metadata (WIP)"
-                            , "- Library and playlist (WIP)"
-                            , "- Lyric (WIP)"]
+                        model: ["Welcome to Blueberry Wolfz"
+                            , "This is my very first project"
+                            , "The project is for studying"
+                            , "I will try to optimize it"
+                            , "Running completely local"]
                         Text {
                             text: modelData
                             color: "#a5adcb"

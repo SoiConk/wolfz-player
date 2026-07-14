@@ -1,4 +1,6 @@
-import Blueberry_Wolfz
+import Blueberry_Wolfz 1.0
+
+import "qrc:/Blueberry_Wolfz/src/ui/subviews/maincontent"
 
 import QtQuick
 import QtQuick.Layouts
@@ -9,26 +11,6 @@ Rectangle {
     color: "#1e1e2e"
     border.color: "#313244"
     border.width: 1
-
-    Connections {
-        target: PlayerController
-
-        function onHistoryUpdated(list) {
-            historyTab.historyList = list
-        }
-    }
-
-    Connections {
-        target: PlayerController
-
-        function onQueueUpdated(list) {
-            queueTab.queueList = list
-        }
-
-        function onIndexChanged(index) {
-            queueTab.currentPlayingIndex = index
-        }
-    }
 
     property int currentGroupTab: 1 // 0: History, 1: Queue, 2: Lyrics
 
@@ -104,7 +86,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                onPlayRequested: (filePath) => PlayerController.openFile(filePath)
+                onPlayRequested: (idSong) => MusicLoader.loadId(idSong)
             }
 
             // index 1

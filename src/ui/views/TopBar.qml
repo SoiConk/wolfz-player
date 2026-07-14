@@ -1,4 +1,4 @@
-import Blueberry_Wolfz
+import Blueberry_Wolfz 1.0
 
 import QtQuick
 import QtQuick.Layouts
@@ -15,11 +15,10 @@ Rectangle {
     FileDialog {
         id: fileDialog
         title: "Select Audio file"
-        currentFolder: StandardPaths.writableLocation(StandardPaths.MusicLocation)
-        nameFilters: ["Audio files (*.mp3 *.wav)"]
+        currentFolder: MusicLoader.lastFolder
+        nameFilters: ["Audio files (*.mp3)"]
         onAccepted: {
             var path = selectedFile.toString();
-
             if (path.startsWith("file:///")) {
                 path = path.substring(8);
             }
@@ -30,7 +29,7 @@ Rectangle {
     FolderDialog {
         id: folderDialog
         title: "Select Audio folder"
-        currentFolder: StandardPaths.writableLocation(StandardPaths.MusicLocation)
+        currentFolder: MusicLoader.lastFolder
         onAccepted: {
             var path = selectedFolder.toString();
             if (path.startsWith("file:///")) {

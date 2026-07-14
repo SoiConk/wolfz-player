@@ -1,4 +1,4 @@
-import "../components"
+import "qrc:/Blueberry_Wolfz/src/ui/components"
 
 import QtQuick
 import QtQuick.Layouts

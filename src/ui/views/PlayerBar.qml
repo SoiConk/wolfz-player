@@ -1,4 +1,6 @@
-import Blueberry_Wolfz
+import Blueberry_Wolfz 1.0
+
+import "qrc:/Blueberry_Wolfz/src/ui/components"
 
 import QtQuick
 import QtQuick.Layouts
@@ -15,12 +17,7 @@ Rectangle {
             let seconds = totalSeconds % 60;
             return String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
     }
-
-    // Name demo
-    function getFileName(path) {
-        if (!path) return "";
-        return path.substring(path.lastIndexOf("/") + 1);
-    }
+    property bool isPlaying: PlayerController.currentSong !== -1
 
     ProgressBar {
         anchors.top: parent.top
@@ -63,7 +60,8 @@ Rectangle {
 
                 ImageRounded {
                     size: 45
-                    source: "qrc:/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+                    source: ShowInfo.miniCoverPath(PlayerController.currentSong)
+                            || "qrc:/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
                     radius: 4
                 }
             }
@@ -75,7 +73,8 @@ Rectangle {
                 visible: parent.showText
 
                 Text {
-                    text: "Unknown"
+                    text: playerBarRoot.isPlaying ? ShowInfo.title(PlayerController.currentSong)
+                                    : "Unknown"
                     color: "#cdd6f4"
                     font.pixelSize: 24
                     font.bold: true
@@ -83,7 +82,8 @@ Rectangle {
                     Layout.fillWidth: true
                 }
                 Text {
-                    text: "None"
+                    text: playerBarRoot.isPlaying ? ShowInfo.artist(PlayerController.currentSong)
+                                    : "None"
                     color: "#a6adc8"
                     font.pixelSize: 14
                     font.italic: true

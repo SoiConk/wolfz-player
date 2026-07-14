@@ -1,4 +1,6 @@
-import "../components"
+import Blueberry_Wolfz 1.0
+
+import "qrc:/Blueberry_Wolfz/src/ui/components"
 
 import QtQuick
 import QtQuick.Layouts
@@ -22,8 +24,9 @@ Rectangle {
         ImageRounded {
             anchors.fill: parent
             anchors.margins: 2
-            size: Math.min((parent.width - 4) / 50 * 50, (parent.height - 4) / 50 * 50, 850)
-            source: "qrc:/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+            size: Math.min((parent.width - 4), (parent.height - 4), 850)
+            source: ShowInfo.coverPath(PlayerController.currentSong)
+                    || "qrc:/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
             radius: 12
         }
     }

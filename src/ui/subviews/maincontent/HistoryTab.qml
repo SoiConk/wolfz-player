@@ -1,3 +1,7 @@
+import Blueberry_Wolfz 1.0
+
+import "qrc:/Blueberry_Wolfz/src/ui/components"
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -7,9 +11,7 @@ Item {
     Layout.fillWidth: true
     Layout.fillHeight: true
 
-    property var historyList: []
-
-    signal playRequested(string filePath)
+    signal playRequested(int songId)
 
     Text {
         text: "EMPTY"
@@ -25,21 +27,19 @@ Item {
         anchors.margins: 10
         spacing: 4
         clip: true
-        model: historyTabRoot.historyList
+        model: HistoryModel
 
         delegate: ItemDelegate {
             id: historyItem
             width: historyListView.width
-            height: 40
-
-            readonly property bool isCurrentPlaying: index === 0
+            height: 45
 
             background: Rectangle {
-                color: historyItem.isCurrentPlaying
+                color: index === 0
                     ? "#2e3148"
                     : historyItem.hovered ? "#252538" : "transparent"
                 radius: 4
-                border.color: historyItem.isCurrentPlaying ? "#f38ba8" : "transparent"
+                border.color: index === 0 ? "#f38ba8" : "transparent"
                 border.width: 1
             }
 
@@ -49,28 +49,67 @@ Item {
                 anchors.rightMargin: 10
                 spacing: 10
 
+                // Play icon
                 Text {
                     text: "↩"
-                    color: historyItem.isCurrentPlaying ? "#f38ba8" : "#a6adc8"
+                    color: index === 0 ? "#f38ba8" : "#a6adc8"
                     font.pixelSize: 14
                     Layout.alignment: Qt.AlignVCenter
                 }
 
+                // Minicover
+                ImageRounded {
+                    size: 40
+                    source: ShowInfo.miniCoverPath(Number(modelData))
+                            || "qrc:/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+                    radius: 4
+                }
+
+                // Name
                 Text {
-                    text: {
-                        var str = modelData;
-                        return str.substring(str.lastIndexOf("/") + 1);
-                    }
-                    color: historyItem.isCurrentPlaying ? "#f38ba8" : "#cdd6f4"
+                    text: ShowInfo.title(Number(modelData))
+                    color: index === 0 ? "#f38ba8" : "#cdd6f4"
                     font.pixelSize: 13
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignVCenter
                 }
+
+                // Duration
+                Text {
+                    text: ShowInfo.duration(Number(modelData))
+
+                    color: "#a6adc8"
+
+                    font.pixelSize: 12
+
+                    Layout.alignment:
+                        Qt.AlignVCenter
+                }
             }
 
             onClicked: {
-                historyTabRoot.playRequested(modelData)
+                historyTabRoot.playRequested(Number(modelData))
+            }
+        }
+
+        ScrollBar.vertical: ScrollBar {
+            id: historyScrollBar
+
+            policy: ScrollBar.AsNeeded
+
+            width: 8
+
+            contentItem: Rectangle {
+                implicitWidth: 8
+                radius: 4
+                color: "#6c7086"
+
+                opacity: historyScrollBar.pressed ? 0.9 : 0.5
+            }
+
+            background: Rectangle {
+                color: "transparent"
             }
         }
     }
