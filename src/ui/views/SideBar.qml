@@ -1,4 +1,4 @@
-import "qrc:/Blueberry_Wolfz/src/ui/components"
+import Blueberry_Wolfz 1.0
 
 import QtQuick
 import QtQuick.Layouts
@@ -24,7 +24,7 @@ Rectangle {
         //Home
         CustomButton {
             text: "Home"
-            iconSource: "qrc:/Blueberry_Wolfz/src/ui/assets/icons/home.svg"
+            iconSource: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/home.svg"
             isActive: sideBarRoot.currentMenuIndex === 0
             isCollapsed: sideBarRoot.isCollapsed
             onClicked: sideBarRoot.currentMenuIndex = 0
@@ -33,7 +33,7 @@ Rectangle {
         // Library
         CustomButton {
             text: "Library"
-            iconSource: "qrc:/Blueberry_Wolfz/src/ui/assets/icons/library.svg"
+            iconSource: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/library.svg"
             isActive: sideBarRoot.currentMenuIndex === 1
             isCollapsed: sideBarRoot.isCollapsed
             onClicked: sideBarRoot.currentMenuIndex = 1
@@ -42,7 +42,7 @@ Rectangle {
         //About
         CustomButton {
             text: "About"
-            iconSource: "qrc:/Blueberry_Wolfz/src/ui/assets/icons/about.svg"
+            iconSource: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/about.svg"
             isActive: sideBarRoot.currentMenuIndex === 2
             isCollapsed: sideBarRoot.isCollapsed
             onClicked: sideBarRoot.currentMenuIndex = 2

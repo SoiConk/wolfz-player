@@ -20,11 +20,12 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
+    qDebug() << "Import paths:" << engine.importPathList();
+
     engine.loadFromModule("Blueberry_Wolfz", "Main");
 
     if (engine.rootObjects().isEmpty())
         return -1;
 
     return app.exec();
-
 }

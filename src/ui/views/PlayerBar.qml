@@ -1,7 +1,5 @@
 import Blueberry_Wolfz 1.0
 
-import "qrc:/Blueberry_Wolfz/src/ui/components"
-
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -61,7 +59,7 @@ Rectangle {
                 ImageRounded {
                     size: 45
                     source: ShowInfo.miniCoverPath(PlayerController.currentSong)
-                            || "qrc:/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+                            || "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
                     radius: 4
                 }
             }
@@ -99,19 +97,19 @@ Rectangle {
             spacing: 5
 
             IconButton {
-                iconSource: "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonPrevious.svg";
+                iconSource: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/buttonPrevious.svg";
                 onClicked: PlayerController.playPrevious()
             }
 
             IconButton {
-                iconSource: PlayerController.isPlaying ? "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonPause.svg"
-                                                       : "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonPlay.svg"
+                iconSource: PlayerController.isPlaying ? "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/buttonPause.svg"
+                                                       : "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/buttonPlay.svg"
                 iconSize: 40
                 onClicked: PlayerController.togglePlay()
             }
 
             IconButton {
-                iconSource: "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonNext.svg"
+                iconSource: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/buttonNext.svg"
                 onClicked: PlayerController.playNext()
             }
 
@@ -136,9 +134,9 @@ Rectangle {
             property bool showExtraButton: playerBarRoot.width > 750
 
             IconButton {
-                iconSource: PlayerController.loopMode === 0 ? "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonNoLoop.svg"
-                    : PlayerController.loopMode === 1 ? "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonLoopOne.svg"
-                                                      : "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonLoopAll.svg"
+                iconSource: PlayerController.loopMode === 0 ? "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/buttonNoLoop.svg"
+                    : PlayerController.loopMode === 1 ? "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/buttonLoopOne.svg"
+                                                      : "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/buttonLoopAll.svg"
 
                 onClicked: PlayerController.cycleLoopMode()
             }
@@ -146,9 +144,9 @@ Rectangle {
             IconButton {
                 iconSource: {
                     let vol = PlayerController.volume;
-                    if (vol === 0) return "qrc:/Blueberry_Wolfz/src/ui/assets/icons/volumeMuted.svg";
-                    else if (vol < 50) return "qrc:/Blueberry_Wolfz/src/ui/assets/icons/volumeMid.svg";
-                    else return "qrc:/Blueberry_Wolfz/src/ui/assets/icons/volumeFull.svg";
+                    if (vol === 0) return "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/volumeMuted.svg";
+                    else if (vol < 50) return "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/volumeMid.svg";
+                    else return "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/volumeFull.svg";
                 }
                 onClicked: PlayerController.toggleMute()
             }
@@ -172,7 +170,7 @@ Rectangle {
             }
 
             IconButton {
-                iconSource: "qrc:/Blueberry_Wolfz/src/ui/assets/icons/buttonMore.svg"
+                iconSource: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/buttonMore.svg"
                 Layout.leftMargin: 8
                 visible: parent.showExtraButton
             }

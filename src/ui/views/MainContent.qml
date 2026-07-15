@@ -1,4 +1,4 @@
-import "qrc:/Blueberry_Wolfz/src/ui/subviews"
+import Blueberry_Wolfz 1.0
 
 import QtQuick
 import QtQuick.Layouts

@@ -1,7 +1,5 @@
 import Blueberry_Wolfz 1.0
 
-import "qrc:/Blueberry_Wolfz/src/ui/subviews/maincontent"
-
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls

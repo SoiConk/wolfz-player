@@ -1,7 +1,5 @@
 import Blueberry_Wolfz 1.0
 
-import "qrc:/Blueberry_Wolfz/src/ui/components"
-
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -26,7 +24,7 @@ Rectangle {
             anchors.margins: 2
             size: Math.min((parent.width - 4), (parent.height - 4), 850)
             source: ShowInfo.coverPath(PlayerController.currentSong)
-                    || "qrc:/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+                    || "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
             radius: 12
         }
     }

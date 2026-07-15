@@ -17,6 +17,8 @@ find_package(Qt6 REQUIRED COMPONENTS
     Concurrent
 )
 
+qt_standard_project_setup(REQUIRES 6.11.1)
+
 find_package(TagLib REQUIRED)
 
 set(PROJECT_SOURCES

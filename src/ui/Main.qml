@@ -1,8 +1,8 @@
+import Blueberry_Wolfz 1.0
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
-import "views"
 
 ApplicationWindow {
     id: root

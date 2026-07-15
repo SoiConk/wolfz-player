@@ -61,7 +61,7 @@ Rectangle {
                     sourceSize.height: 30
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectCrop
-                    source: "qrc:/Blueberry_Wolfz/src/ui/assets/images/appLogo.png"
+                    source: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/appLogo.png"
                     smooth: true
                 }
             }
@@ -149,7 +149,7 @@ Rectangle {
                     anchors.fill: parent
                     anchors.margins: parent.border.width
                     fillMode: Image.PreserveAspectCrop
-                    source: "qrc:/Blueberry_Wolfz/src/ui/assets/images/profileIcon.png"
+                    source: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/profileIcon.png"
 
                     smooth: true
                     visible: false

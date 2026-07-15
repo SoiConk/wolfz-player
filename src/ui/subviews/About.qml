@@ -94,7 +94,7 @@ Item {
 
                     Image {
                         anchors.fill: parent
-                        source: "qrc:/Blueberry_Wolfz/src/ui/assets/images/about.png"
+                        source: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/about.png"
                         sourceSize.height: card.imageSize
                         sourceSize.width: card.imageSize
                         fillMode: Image.PreserveAspectCrop
