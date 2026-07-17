@@ -14,18 +14,12 @@ Rectangle {
         width: Math.min(parent.width, parent.height) * 0.9
         height: width
         anchors.centerIn: parent
-        color: "#313244"
+        color: "transparent"
         radius: 12
-        border.color: "#45475a"
-        border.width: 1
 
         ImageRounded {
-            anchors.fill: parent
-            anchors.margins: 2
-            size: Math.min((parent.width - 4), (parent.height - 4), 850)
             source: ShowInfo.coverPath(PlayerController.currentSong)
                     || "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
-            radius: 12
         }
     }
 }

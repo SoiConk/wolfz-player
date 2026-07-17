@@ -57,10 +57,8 @@ Rectangle {
                 Layout.alignment: Qt.AlignVCenter
 
                 ImageRounded {
-                    size: 45
                     source: ShowInfo.miniCoverPath(PlayerController.currentSong)
                             || "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
-                    radius: 4
                 }
             }
 

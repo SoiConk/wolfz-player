@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QtGlobal>
+#include <QList>
 
 struct Song
 {
@@ -20,14 +21,6 @@ struct Song
          const QString& artist,
          qint64 duration,
          qint64 artworkId);
-};
-
-struct TrackReference
-{
-    qint64 songId = -1;
-
-    TrackReference() = default;
-    explicit TrackReference(qint64 songId);
 };
 
 struct SongArtwork
@@ -51,8 +44,21 @@ struct SongLite
     SongLite() = default;
     explicit SongLite(const QString& title,
                       const QString& artist,
-                      const qint64 duration,
+                      qint64 duration,
                       const QString& miniCoverPath);
+};
+
+struct Album
+{
+    qint64 albumId;
+    QList<qint64> songIdList;
+    qint64 totalDuration;
+    QString albumCoverPath;
+    Album() = default;
+    explicit Album(qint64 albumId,
+                   const QList<qint64> songIdList,
+                   qint64 totalDuration,
+                   const QString& albumCoverPath);
 };
 
 #endif // SONG_H

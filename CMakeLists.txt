@@ -33,6 +33,10 @@ set(PROJECT_SOURCES
         src/control/service/MetadataManager.h
         src/control/service/ShowInfo.h
         src/control/service/ShowInfo.cpp
+        src/control/service/DatabaseManager.h
+        src/control/service/DatabaseManager.cpp
+        src/control/service/ExtractMetadata.h
+        src/control/service/ExtractMetadata.cpp
 
         src/data/player/MusicPlayer.cpp
         src/data/player/MusicPlayer.h

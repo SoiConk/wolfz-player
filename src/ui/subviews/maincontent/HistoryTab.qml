@@ -23,13 +23,16 @@ Item {
         id: historyListView
         anchors.fill: parent
         anchors.margins: 10
+        anchors.rightMargin: 5
         spacing: 4
         clip: true
         model: HistoryModel
 
         delegate: ItemDelegate {
             id: historyItem
-            width: historyListView.width
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.rightMargin: 10
             height: 45
 
             background: Rectangle {
@@ -47,26 +50,24 @@ Item {
                 anchors.rightMargin: 10
                 spacing: 10
 
-                // Play icon
-                Text {
-                    text: "↩"
-                    color: index === 0 ? "#f38ba8" : "#a6adc8"
-                    font.pixelSize: 14
-                    Layout.alignment: Qt.AlignVCenter
-                }
-
                 // Minicover
-                ImageRounded {
-                    size: 40
-                    source: ShowInfo.miniCoverPath(Number(modelData))
-                            || "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+                Rectangle {
+                    id: miniCoverContainer
+
+                    width: 40
+                    height: width
                     radius: 4
+                    ImageRounded {
+                        source: ShowInfo.miniCoverPath(Number(modelData))
+                                || "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+                    }
                 }
 
                 // Name
                 Text {
                     text: ShowInfo.title(Number(modelData))
                     color: index === 0 ? "#f38ba8" : "#cdd6f4"
+                    font.bold: index === 0
                     font.pixelSize: 13
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -96,10 +97,10 @@ Item {
 
             policy: ScrollBar.AsNeeded
 
-            width: 8
+            width: 10
 
             contentItem: Rectangle {
-                implicitWidth: 8
+                implicitWidth: 10
                 radius: 4
                 color: "#6c7086"
 
