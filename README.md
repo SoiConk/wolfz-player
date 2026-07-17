@@ -1,4 +1,4 @@
-# 🎵 Blueberry Wolfz
+# Blueberry Wolfz
 
 Blueberry Wolfz is a desktop music player built with **C++ and Qt Quick (QML)**.
 
@@ -6,11 +6,11 @@ This project started as a way to learn how to build a complete desktop applicati
 
 The main goal of this project is not only creating a music player, but also learning how to design a maintainable application with a clear separation between UI, data, and core logic.
 
-> ⚠️ Status: Work in Progress
+> Status: Work in Progress
 
 ---
 
-## 📸 Preview
+## Preview
 
 <p align="center">
   <img src="preview.png" width="800"/>
@@ -18,7 +18,7 @@ The main goal of this project is not only creating a music player, but also lear
 
 ---
 
-## ✨ About
+## About
 
 Blueberry Wolfz is a local music player designed around a simple idea:
 
@@ -32,7 +32,7 @@ The project is still under development, so some parts of the application may cha
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Language:** C++17
 - **UI Framework:** Qt Quick / QML
@@ -53,7 +53,7 @@ Linux and macOS builds are planned but have not been fully tested yet.
 
 ---
 
-## 🚀 Current Features
+## Current Features
 
 Currently implemented:
 
@@ -72,7 +72,7 @@ More features will be added during development.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 Blueberry_Wolfz
@@ -92,24 +92,23 @@ Blueberry_Wolfz
 │   │   ├── controllers    # Button control and logic
 │   │   └── services       # Database and info logic
 │   │
-│   ├── data
-│   │   ├── models         # Data models
-│   │   └── playlist       # Playlist, queue, history
-│   │
-│   └── player             # Audio playback related classes
+│   └── data
+│       ├── models         # Data models
+│       ├── playlist       # Playlist, queue, history
+│       └── player         # Audio playback related classes
 │
 ├── CMakeLists.txt
 │
 └── README.md
 
----
+```
 
-## 💾 Application Data Storage
+## Application Data Storage
 
 Blueberry Wolfz stores user data separately from the application installation directory.
 
 On Windows, application data is stored at:
-```
+
 ```plainttext
 %APPDATA%/Blueberry_Wolfz/
 ```
@@ -149,7 +148,7 @@ Separating application data from the installation directory allows:
 
 ---
 
-## 🧠 Architecture
+## Architecture
 
 Blueberry Wolfz follows a separation between the UI layer and application logic.
 
@@ -176,9 +175,9 @@ QML communicates with C++ through Qt properties, signals, and slots.
 
 ---
 
-## 📥 Installation
+## Installation
 
-### 🪟 Windows
+### Windows
 
 Download and run the installer:
 
@@ -190,7 +189,7 @@ Follow the installation wizard to install Blueberry Wolfz.
 
 ---
 
-### 🐧 Linux / 🍎 macOS
+### Linux /  macOS
 
 Linux and macOS builds are currently under development.
 
@@ -198,7 +197,7 @@ Native installers are not available yet.
 
 ---
 
-## 📝 Things I Want To Improve
+## Future Plans
 
 Some improvements planned for the future:
 
@@ -214,7 +213,7 @@ Some improvements planned for the future:
 
 ---
 
-## ⚠️ Notes
+## Notes
 
 This project is mainly created for learning and experimentation.
 
@@ -227,13 +226,13 @@ The codebase may change frequently while exploring better solutions for:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
 
 ---
 
-## 👤 Author
+## Author
 
 **Sói Con**
 
@@ -241,7 +240,7 @@ GitHub: https://github.com/SoiConk
 
 ---
 
-## 🎨 Credits
+## Credits
 
 Some default artworks used in this app belong to their respective artists.
 
