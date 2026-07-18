@@ -100,9 +100,10 @@ void HistoryModel::reload()
 
 ShowInfo::ShowInfo(QObject* parent) : QObject(parent)
 {
+    connect(&Queue::getInstance(), &Queue::changed, this, &ShowInfo::clearCache);
 }
 
-const SongLite& ShowInfo::getOrCreate(qint64 songId) const {
+const SongShowInfo& ShowInfo::getOrCreate(qint64 songId) const {
     if (!cache.contains(songId))
     {
         cache.insert(songId, MetadataManager::getInstance().getMetadata(songId));
@@ -143,4 +144,9 @@ QString ShowInfo::coverPath(qint64 songId) const
 {
     QString path = MetadataManager::getInstance().getCoverPath(songId);
     return !path.isEmpty() ? "file:///" + path : "";
+}
+
+void ShowInfo::clearCache()
+{
+    cache.clear();
 }

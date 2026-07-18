@@ -11,12 +11,18 @@ Rectangle {
     id: topBarRoot
     color: "#1e1e2e"
 
+    signal switchToHistory()
     // Select file or folder dialog
     FileDialog {
         id: fileDialog
         title: "Select Audio file"
         currentFolder: MusicLoader.lastFolder
-        nameFilters: ["Audio files (*.mp3)"]
+        nameFilters: [
+            "Audio files (*.mp3 *.flac *.wav *.aac *.ogg)",
+            "MP3 files (*.mp3)",
+            "FLAC files (*.flac)",
+            "WAV files (*.wav)"
+        ]
         onAccepted: {
             var path = selectedFile.toString();
             if (path.startsWith("file:///")) {
@@ -36,6 +42,7 @@ Rectangle {
                 path = path.substring(8);
             }
             MusicLoader.openFolder(path);
+            switchToHistory();
         }
     }
 

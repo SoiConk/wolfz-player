@@ -100,6 +100,7 @@ private:
     void playCurrent();
     void handleEndOfMedia();
     bool isPlaying = false;
+    void loadCurrent();
 
     /*
     Volume Group

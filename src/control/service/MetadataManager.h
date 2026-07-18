@@ -2,6 +2,7 @@
 #define METADATAMANAGER_H
 
 #include <data/model/Song.h>
+#include <control/service/ExtractMetadata.h>
 
 #include <QObject>
 #include <QHash>
@@ -18,16 +19,14 @@ public:
     void processFile(const QString& file);
     void processFolder(const QStringList& list);
 
-    QString appDataPath() const;
-    QString appLocalDataPath() const;
-
     QString getPathById(qint64 songId);
+
     QList<qint64> getQueue() const;
     void setQueue(QList<qint64> queue);
     QList<qint64> getHistory() const;
     void setHistory(QList<qint64> history);
-    void cleanMissingFiles();
-    SongLite getMetadata(qint64 songId) const;
+
+    SongShowInfo getMetadata(qint64 songId) const;
     QString getCoverPath(qint64 songId) const;
     void addSongId(qint64 songId);
 
@@ -40,17 +39,17 @@ private:
     ~MetadataManager();
 
     void initDatabase();
-    bool existsInDB(const QString& path, qint64 &songId);
+    QString appDataPath() const;
+
+    bool existsInDB(const QString& path, qint64 &songId, QSqlDatabase& db);
     qint64 insertSong(const QString& path);
 
     QString queryPathFromDB(qint64 songId);
 
-    void extractMetadata(const QString& path,
-                         QString &title,
-                         QString &artist,
-                         qint64 &duration);
+    SongInfo getSongInfo(const QString& path);
+    qint64 getArtworkId(const QString& path, QSqlDatabase &db);
 
-    qint64 extractArtworks(const QString& path, QSqlDatabase &db);
+    void removeMissingSong(qint64 songId);
 
 private:
     MetadataManager(const MetadataManager&) = delete;
@@ -59,6 +58,8 @@ private:
     QSqlDatabase database;
 
     QHash<qint64, QString> pathCache;
+
+    ExtractMetadata metadata;
 };
 
 #endif // METADATAMANAGER_H

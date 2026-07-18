@@ -10,6 +10,7 @@ Rectangle {
 
     // Property get from SideBar through Main.qml
     property int currentPageIndex: 0
+    property alias groupPanel: groupPanelRoot
 
     readonly property bool isCollaped: width < 800
 
@@ -30,6 +31,7 @@ Rectangle {
 
             // GroupBox
             GroupPanel {
+                id: groupPanelRoot
                 Layout.fillHeight: true
                 Layout.preferredWidth: parent.width * 0.35
                 Layout.minimumWidth: 320

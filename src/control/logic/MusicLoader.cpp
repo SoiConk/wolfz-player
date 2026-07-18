@@ -5,6 +5,9 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QStandardPaths>
+#include <QHash>
+
+
 
 MusicLoader::MusicLoader(QObject *parent) :QObject(parent)
 {
@@ -32,16 +35,37 @@ void MusicLoader::openFolder(const QString &folderPath)
     folder = QUrl::fromLocalFile(directory.absolutePath());
     emit lastFolderChanged();
 
-    QStringList filters;
-    filters << "*.mp3";
+    QStringList filters = {"*.mp3", "*.flac", "*.wav", "*.m4a", "*.mp4", "*.wma", "*.asf"};;
 
-    QFileInfoList files = directory.entryInfoList(filters, QDir::Files, QDir::Name);
+    QFileInfoList files = directory.entryInfoList(filters, QDir::Files);
 
     QStringList tempList;
 
+    QFileInfo bestFile;
+    QString currentBase;
+
+    std::sort(files.begin(), files.end(), [](const QFileInfo &a, const QFileInfo &b) {
+        return a.completeBaseName() < b.completeBaseName();
+    });
+
     for (const QFileInfo &file : std::as_const(files)) {
-        tempList.append(file.absoluteFilePath());
+        QString base = file.completeBaseName();
+
+        if (base != currentBase) {
+            if (!bestFile.fileName().isEmpty())
+                tempList.append(bestFile.absoluteFilePath());
+
+            bestFile = file;
+            currentBase = base;
+        } else {
+            if (rankFilter(file.suffix()) > rankFilter(bestFile.suffix())) {
+                bestFile = file;
+            }
+        }
     }
+
+    if (!bestFile.fileName().isEmpty())
+        tempList.append(bestFile.absoluteFilePath());
 
     if (tempList.isEmpty()){
         return;
@@ -58,4 +82,19 @@ QUrl MusicLoader::lastFolder() const
 void MusicLoader::loadId(qint64 songId)
 {
     MetadataManager::getInstance().addSongId(songId);
+}
+
+int MusicLoader::rankFilter(const QString& suffix)
+{
+    static const QHash<QString, int> rank = {
+        {"flac", 4},
+        {"m4a",  3},
+        {"mp4", 3},
+        {"wav", 2},
+        {"mp3",  1},
+        {"wma", 0},
+        {"asf",  0}
+    };
+
+    return rank.value(suffix.toLower(), 0);
 }

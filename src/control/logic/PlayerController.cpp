@@ -8,7 +8,7 @@ PlayerController::PlayerController(QObject *parent) : QObject(parent) {
 
     if (!Queue::getInstance().isEmpty())
     {
-        playCurrent();
+        loadCurrent();
     }
 
     // Song add
@@ -89,15 +89,8 @@ void PlayerController::handlePlayerStateChanged(QMediaPlayer::PlaybackState stat
 
 void PlayerController::playCurrent()
 {
-    qint64 songId = currentSong();
-    QString file = MetadataManager::getInstance().getPathById(songId);
-
-    player->load(file);
+    loadCurrent();
     player->play();
-
-    History::getInstance().add(songId);
-    emit currentSongChanged();
-    emit currentIndexChanged();
 }
 
 void PlayerController::handleEndOfMedia()
@@ -108,6 +101,33 @@ void PlayerController::handleEndOfMedia()
     }
 
     playNext();
+}
+
+void PlayerController::loadCurrent()
+{
+    qint64 songId = currentSong();
+    if (currentSong() == -1)
+        return;
+    QString file = MetadataManager::getInstance().getPathById(songId);
+    if (file.isEmpty()) {
+        while (currentIndex() < Queue::getInstance().size() - 1) {
+            int currIndex = currentIndex();
+            Queue::getInstance().setIndex(currIndex + 1);
+            songId = currentSong();
+            QString file = MetadataManager::getInstance().getPathById(songId);
+            if (!file.isEmpty()) {
+                break;
+            }
+        }
+        History::getInstance().addList(MetadataManager::getInstance().getHistory());
+        Queue::getInstance().addList(MetadataManager::getInstance().getQueue());
+        Queue::getInstance().setIndexById(songId);
+        return;
+    }
+    History::getInstance().add(songId);
+    emit currentSongChanged();
+    emit currentIndexChanged();
+    player->load(file);
 }
 
 /*

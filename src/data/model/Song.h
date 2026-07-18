@@ -23,26 +23,37 @@ struct Song
          qint64 artworkId);
 };
 
-struct SongArtwork
+struct SongCover
 {
-    qint64 artworkId = -1;
+    QString hash;
     QString miniCoverPath;
     QString coverPath;
 
-    SongArtwork() = default;
-    explicit SongArtwork(qint64 artworkId,
+    SongCover() = default;
+    explicit SongCover(const QString& hash,
                 const QString& miniCoverPath,
                 const QString& coverPath);
 };
 
-struct SongLite
+struct SongInfo
+{
+    QString title;
+    QString artist;
+    qint64 duration = 0;
+    SongInfo() = default;
+    explicit SongInfo(const QString& title,
+                      const QString& artist,
+                      qint64 duration);
+};
+
+struct SongShowInfo
 {
     QString title;
     QString artist;
     qint64 duration = 0;
     QString miniCoverPath;
-    SongLite() = default;
-    explicit SongLite(const QString& title,
+    SongShowInfo() = default;
+    explicit SongShowInfo(const QString& title,
                       const QString& artist,
                       qint64 duration,
                       const QString& miniCoverPath);
@@ -51,11 +62,13 @@ struct SongLite
 struct Album
 {
     qint64 albumId;
+    QString title;
     QList<qint64> songIdList;
     qint64 totalDuration;
     QString albumCoverPath;
     Album() = default;
     explicit Album(qint64 albumId,
+                   const QList<qint64> title,
                    const QList<qint64> songIdList,
                    qint64 totalDuration,
                    const QString& albumCoverPath);

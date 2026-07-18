@@ -63,15 +63,9 @@ class ShowInfo : public QObject {
     QML_ELEMENT
     QML_SINGLETON
 private:
-    struct Meta {
-        QString title;
-        QString artist;
-        int duration;
-        QString miniCoverPath;
-    };
-    mutable QHash<qint64, SongLite> cache;
+    mutable QHash<qint64, SongShowInfo> cache;
 
-    const SongLite& getOrCreate(qint64 songId) const;
+    const SongShowInfo& getOrCreate(qint64 songId) const;
 
 public:
     explicit ShowInfo(QObject *parent = nullptr);
@@ -80,6 +74,7 @@ public:
     Q_INVOKABLE QString duration(qint64 songId) const;
     Q_INVOKABLE QString miniCoverPath(qint64 songId) const;
     Q_INVOKABLE QString coverPath(qint64 songId) const;
+    void clearCache();
 };
 
 #endif

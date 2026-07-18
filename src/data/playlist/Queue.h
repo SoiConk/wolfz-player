@@ -29,6 +29,7 @@ public:
     int getIndex() const;
 
     int size() const;
+    void setIndexById(qint64 songId);
 
 signals:
     void changedIndex(qint64 index);

@@ -14,18 +14,26 @@ Song::Song(const QString& path,
     artworkId(artworkId)
 {}
 
-SongArtwork::SongArtwork(qint64 artworkId,
+SongCover::SongCover(const QString& hash,
                          const QString& miniCoverPath,
                          const QString& coverPath) :
-    artworkId(artworkId),
+    hash(hash),
     miniCoverPath(miniCoverPath),
     coverPath(coverPath)
 {}
 
-SongLite::SongLite(const QString& title,
+SongInfo::SongInfo(const QString& title,
                    const QString& artist,
-                   qint64 duration,
-                   const QString& miniCoverPath) :
+                   qint64 duration) :
+    title(title),
+    artist(artist),
+    duration(duration)
+{}
+
+SongShowInfo::SongShowInfo(const QString& title,
+                           const QString& artist,
+                           qint64 duration,
+                           const QString& miniCoverPath) :
     title(title),
     artist(artist),
     duration(duration),
@@ -33,11 +41,13 @@ SongLite::SongLite(const QString& title,
 {}
 
 Album::Album(qint64 albumId,
+             const QList<qint64> title,
              const QList<qint64> songIdList,
              qint64 totalDuration,
              const QString& albumCoverPath
              ) :
     albumId(albumId),
+    title(title),
     songIdList(songIdList),
     totalDuration(totalDuration),
     albumCoverPath(albumCoverPath)

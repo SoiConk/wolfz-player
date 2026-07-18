@@ -23,6 +23,9 @@ ApplicationWindow {
             Layout.preferredHeight: 60
             Layout.minimumHeight: 60
             Layout.maximumHeight: 60
+            onSwitchToHistory: {
+                mainContent.groupPanel.currentGroupTab = 0
+            }
         }
 
         RowLayout {

@@ -29,9 +29,9 @@ void Queue::addList(const QList<qint64> &listId)
     if (listId == list)
         return;
     list = listId;
-    index = 0;
-
-    emit changedIndex(index);
+    index = list.isEmpty() ? 1 : 0;
+    if (index == -1)
+        emit changedIndex(index);
     emit changed(list);
 }
 
@@ -107,4 +107,11 @@ int Queue::getIndex() const
 int Queue::size() const
 {
     return list.size();
+}
+
+void Queue::setIndexById(qint64 songId)
+{
+    int newIndex = list.indexOf(songId);
+    setIndex(newIndex);
+    emit changedIndex(index);
 }

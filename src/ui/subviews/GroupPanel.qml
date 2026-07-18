@@ -5,12 +5,12 @@ import QtQuick.Layouts
 import QtQuick.Controls
 
 Rectangle {
-    id: groupPanelRoot
+    id: gproot
     color: "#1e1e2e"
     border.color: "#313244"
     border.width: 1
 
-    property int currentGroupTab: 1 // 0: History, 1: Queue, 2: Lyrics
+    property int currentGroupTab: 0 // 0: History, 1: Queue, 2: Lyrics
 
     ColumnLayout {
         anchors.fill: parent
@@ -30,39 +30,39 @@ Rectangle {
                     Layout.fillWidth: true; Layout.fillHeight: true; flat: true
                     contentItem: Text {
                         text: "History"
-                        color: groupPanelRoot.currentGroupTab === 0 ? "#f38ba8" : "#a6adc8"
-                        font.bold: groupPanelRoot.currentGroupTab === 0
+                        color: gproot.currentGroupTab === 0 ? "#f38ba8" : "#a6adc8"
+                        font.bold: gproot.currentGroupTab === 0
                         font.pixelSize: 13
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-                    onClicked: groupPanelRoot.currentGroupTab = 0
+                    onClicked: gproot.currentGroupTab = 0
                 }
 
                 Button {
                     Layout.fillWidth: true; Layout.fillHeight: true; flat: true
                     contentItem: Text {
                         text: "Queue"
-                        color: groupPanelRoot.currentGroupTab === 1 ? "#f38ba8" : "#a6adc8"
-                        font.bold: groupPanelRoot.currentGroupTab === 1
+                        color: gproot.currentGroupTab === 1 ? "#f38ba8" : "#a6adc8"
+                        font.bold: gproot.currentGroupTab === 1
                         font.pixelSize: 13
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-                    onClicked: groupPanelRoot.currentGroupTab = 1
+                    onClicked: gproot.currentGroupTab = 1
                 }
 
                 Button {
                     Layout.fillWidth: true; Layout.fillHeight: true; flat: true
                     contentItem: Text {
                         text: "Lyrics"
-                        color: groupPanelRoot.currentGroupTab === 2 ? "#f38ba8" : "#a6adc8"
-                        font.bold: groupPanelRoot.currentGroupTab === 2
+                        color: gproot.currentGroupTab === 2 ? "#f38ba8" : "#a6adc8"
+                        font.bold: gproot.currentGroupTab === 2
                         font.pixelSize: 13
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-                    onClicked: groupPanelRoot.currentGroupTab = 2
+                    onClicked: gproot.currentGroupTab = 2
                 }
             }
         }
@@ -75,7 +75,7 @@ Rectangle {
             id: contentStack
             Layout.fillWidth: true
             Layout.fillHeight: true
-            currentIndex: groupPanelRoot.currentGroupTab
+            currentIndex: gproot.currentGroupTab
             clip: true
 
              // index 0
