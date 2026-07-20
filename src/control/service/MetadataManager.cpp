@@ -79,6 +79,23 @@ void MetadataManager::initDatabase()
         );
     )");
 
+    query.exec(R"(CREATE TABLE IF NOT EXISTS playlists (
+            playlistId INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            duration INTEGER,
+            albumCoverPath TEXT
+        );
+    )");
+
+    query.exec(R"(CREATE TABLE IF NOT EXISTS playlist_songs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            position INTEGER,
+            playlistId INTEGER,
+            songId INTEGER,
+            FOREIGN KEY (playlistId) REFERENCES playlists(playlistId)
+        );
+    )");
+
     query.exec("CREATE INDEX IF NOT EXISTS idx_path ON songs(path);");
 }
 
@@ -453,6 +470,10 @@ void MetadataManager::removeMissingSong(qint64 songId)
 
     database.transaction();
 
+    query.prepare("DELETE FROM playlist_songs WHERE songId = ?");
+    query.addBindValue(songId);
+    query.exec();
+
     query.prepare("DELETE FROM queue WHERE songId = ?");
     query.addBindValue(songId);
     query.exec();
@@ -501,4 +522,327 @@ void MetadataManager::removeMissingSong(qint64 songId)
     database.commit();
 
     pathCache.remove(songId);
+    emit playlistUpdate();
+    emit clearInfoCache();
+}
+
+qint64 MetadataManager::addNewPlaylist(const QString& name)
+{
+    QSqlQuery query(database);
+    query.prepare(R"(INSERT INTO playlists(name, duration, albumCoverPath)
+        VALUES (?, 0, NULL)
+    )");
+    query.addBindValue(name);
+
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+        return -1;
+    }
+
+    emit clearedAlbumCache();;
+    return query.lastInsertId().toLongLong();
+}
+
+void MetadataManager::addSongPlaylist(qint64 playlistId, qint64 songId)
+{
+    QSqlQuery query(database);
+
+    query.prepare("SELECT MAX(position) FROM playlist_songs WHERE playlistId = ?");
+    query.addBindValue(playlistId);
+
+    int pos = 0;
+    if (query.exec() && query.next())
+        pos = query.value(0).toInt() + 1;
+
+    query.prepare(R"(
+        INSERT INTO playlist_songs(playlistId, songId, position)
+        VALUES (?, ?, ?)
+    )");
+
+    query.addBindValue(playlistId);
+    query.addBindValue(songId);
+    query.addBindValue(pos);
+
+    query.exec();
+
+    query.prepare("SELECT duration FROM songs WHERE songId = ?");
+    query.addBindValue(songId);
+
+    if (!query.exec() || !query.next())
+        return;
+
+    int duration = query.value(0).toInt();
+
+    QSqlQuery update(database);
+    update.prepare(R"(
+        UPDATE playlists
+        SET duration = duration + ?
+        WHERE playlistId = ?
+    )");
+    update.addBindValue(duration);
+    update.addBindValue(playlistId);
+
+    if (!update.exec()) {
+        qDebug() << "update duration failed:" << update.lastError().text();
+    }
+    emit playlistUpdate();
+}
+
+void MetadataManager::addSongList(qint64 playlistId, const QList<qint64>& songList)
+{
+    QSqlQuery query(database);
+
+    database.transaction();
+
+    query.prepare("SELECT MAX(position) FROM playlist_songs WHERE playlistId = ?");
+    query.addBindValue(playlistId);
+
+    int pos = 0;
+    if (query.exec() && query.next())
+        pos = query.value(0).toInt() + 1;
+
+    query.prepare(R"(
+        INSERT INTO playlist_songs(playlistId, songId, position)
+        VALUES (?, ?, ?)
+    )");
+
+    int totalDuration = 0;
+    for (qint64 songId : songList)
+    {
+        query.bindValue(0, playlistId);
+        query.bindValue(1, songId);
+        query.bindValue(2, pos++);
+        query.exec();
+
+        QSqlQuery d(database);
+        d.prepare("SELECT duration FROM songs WHERE songId = ?");
+        d.addBindValue(songId);
+
+        if (d.exec() && d.next())
+            totalDuration += d.value(0).toInt();
+    }
+
+    QSqlQuery update(database);
+    update.prepare("UPDATE playlists SET duration = duration + ? WHERE playlistId = ?");
+    update.addBindValue(totalDuration);
+    update.addBindValue(playlistId);
+    update.exec();
+
+    database.commit();
+    emit playlistUpdate();
+}
+
+QList<qint64> MetadataManager::getSongList(qint64 playlistId)
+{
+    QList<qint64> result;
+
+    QSqlQuery query(database);
+    query.prepare(R"(
+        SELECT songId FROM playlist_songs
+        WHERE playlistId = ?
+        ORDER BY position ASC
+    )");
+
+    query.addBindValue(playlistId);
+
+    if (query.exec())
+    {
+        while (query.next())
+            result.append(query.value(0).toLongLong());
+    }
+
+    return result;
+}
+
+void MetadataManager::removeSong(qint64 playlistId, qint64 songId)
+{
+    QSqlQuery query(database);
+    database.transaction();
+
+    query.prepare(R"(
+        SELECT position, s.duration
+        FROM playlist_songs ps
+        JOIN songs s ON ps.songId = s.songId
+        WHERE ps.playlistId = ? AND ps.songId = ?
+    )");
+    query.addBindValue(playlistId);
+    query.addBindValue(songId);
+
+    int pos = -1;
+    int duration = 0;
+
+    if (query.exec() && query.next()) {
+        pos = query.value(0).toInt();
+        duration = query.value(1).toInt();
+    }
+
+    query.prepare(R"(
+        DELETE FROM playlist_songs
+        WHERE playlistId = ? AND songId = ?
+    )");
+
+    query.addBindValue(playlistId);
+    query.addBindValue(songId);
+    query.exec();
+
+    QSqlQuery update(database);
+    update.prepare("UPDATE playlists SET duration = duration - ? WHERE playlistId = ?");
+    update.addBindValue(duration);
+    update.addBindValue(playlistId);
+    update.exec();
+
+    query.prepare(R"(
+        UPDATE playlist_songs
+        SET position = position - 1
+        WHERE playlistId = ? AND position > ?
+    )");
+    query.addBindValue(playlistId);
+    query.addBindValue(pos);
+    query.exec();
+
+    database.commit();
+    emit playlistUpdate();
+}
+
+void MetadataManager::moveSong(qint64 playlistId, int from, int to)
+{
+    QList<qint64> list = getSongList(playlistId);
+
+    if (from < 0 || from >= list.size() || to < 0 || to >= list.size())
+        return;
+
+    list.move(from, to);
+
+    QSqlQuery query(database);
+    database.transaction();
+
+    query.prepare("DELETE FROM playlist_songs WHERE playlistId = ?");
+    query.addBindValue(playlistId);
+    query.exec();
+
+    query.prepare(R"(
+        INSERT INTO playlist_songs(playlistId, songId, position)
+        VALUES (?, ?, ?)
+    )");
+
+    for (int i = 0; i < list.size(); i++)
+    {
+        query.bindValue(0, playlistId);
+        query.bindValue(1, list[i]);
+        query.bindValue(2, i);
+        query.exec();
+    }
+
+    database.commit();
+    emit playlistUpdate();
+}
+
+void MetadataManager::removePlaylist(qint64 playlistId)
+{
+    QSqlQuery query(database);
+
+    database.transaction();
+
+    QSqlQuery deleteSongs(database);
+    deleteSongs.prepare(R"(
+        DELETE FROM playlist_songs
+        WHERE playlistId = ?
+    )");
+    deleteSongs.addBindValue(playlistId);
+
+    if (!deleteSongs.exec()) {
+        qDebug() << "removePlaylist - deleteSongs failed:" << deleteSongs.lastError().text();
+        database.rollback();
+        return;
+    }
+
+    query.prepare(R"(
+        DELETE FROM playlists
+        WHERE playlistId = ?
+    )");
+    query.addBindValue(playlistId);
+
+    if (!query.exec()) {
+        qDebug() << "removePlaylist failed:" << query.lastError().text();
+        database.rollback();
+        return;
+    }
+
+    database.commit();
+    emit clearedAlbumCache();;
+}
+
+void MetadataManager::setPlaylistCover(qint64 playlistId, const QString& coverPath)
+{
+    QSqlQuery query(database);
+    query.prepare(R"(
+        UPDATE playlists
+        SET albumCoverPath = ?
+        WHERE playlistId = ?
+    )");
+
+    query.addBindValue(coverPath);
+    query.addBindValue(playlistId);
+
+    if (!query.exec()) {
+        qDebug() << "setPlaylistCover failed:" << query.lastError().text();
+    }
+    emit playlistUpdate();
+    emit clearedAlbumCache();;
+}
+
+QList<qint64> MetadataManager::getAlbum() const
+{
+    QSqlQuery query(database);
+    query.prepare(R"(
+        SELECT playlistId FROM playlists
+        ORDER BY playlistId ASC
+    )");
+    QList<qint64> playlistIds;
+    if (query.exec()) {
+        if (query.size() > 0) {
+            playlistIds.reserve(query.size());
+        }
+
+        while (query.next()) {
+            qint64 id = query.value(0).toLongLong();
+            playlistIds.append(id);
+        }
+    } else {
+        qWarning() << "Lỗi select playlistId:" << query.lastError().text();
+    }
+    return playlistIds;
+}
+
+AlbumInfo MetadataManager::getAlbumInfo(qint64 playlistId) const
+{
+    SongShowInfo meta;
+
+    QSqlQuery query(database);
+
+    query.prepare(R"(
+        SELECT
+            playlists.name,
+            playlists.duration,
+            playlists.albumCoverPath
+        FROM playlists
+        WHERE playlistId = ?
+    )");
+
+    query.addBindValue(playlistId);
+
+    if (query.exec() && query.next())
+    {
+        return AlbumInfo(
+            query.value(0).toString(),
+            query.value(1).toInt(),
+            query.value(2).toString());
+    }
+
+    return {};
+}
+
+void MetadataManager::reloadAlbum()
+{
+    emit albumUpdate();
 }

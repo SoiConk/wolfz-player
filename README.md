@@ -91,7 +91,7 @@ Blueberry_Wolfz
 │   ├── control
 │   │   ├── controllers    # Button control and logic
 │   │   └── services       # Database and info logic
-│   │
+│   │       └── uimodel    # Playlist model that show in UI
 │   └── data
 │       ├── models         # Data models
 │       ├── playlist       # Playlist, queue, history

@@ -11,6 +11,57 @@ Item {
 
     signal itemSelected(int requestedIndex)
 
+    QueueModel {
+        id: queueModel
+    }
+
+    DialogManager {
+        id: dialogManagerQueue
+    }
+
+    RowLayout {
+        id: queueHeader
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+        anchors.leftMargin: 5
+        anchors.rightMargin: 5
+        anchors.topMargin: 5
+        anchors.bottomMargin: 5
+        height: 50
+
+
+        CustomButton {
+            iconSource: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/addQueue.svg"
+            text: "Queue"
+
+            onClicked: queueMenu.popup()
+        }
+    }
+
+    AppMenu {
+        id: queueMenu
+
+        MenuItem {
+            text: "Add Queue to Playlist"
+            onTriggered: {
+                dialogManagerQueue.openChoosePlaylist(-1, (albumId, songId) => {
+                    playlistService.addQueueToPlaylist(albumId)
+                })
+            }
+        }
+
+        MenuItem {
+            text: "Save as New Playlist"
+            onTriggered: {
+                dialogManagerQueue.openCreatePlaylist(-1, (name, songId) => {
+                    playlistService.addQueueToNewPlaylist(name)
+                })
+            }
+        }
+    }
+
     Text {
         text: "EMPTY"
         color: "#6c7086"
@@ -22,17 +73,21 @@ Item {
     ListView {
         id: queueListView
 
-        anchors.fill: parent
-        anchors.margins: 10
+        anchors.top: queueHeader.bottom
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.topMargin: 5
+        anchors.leftMargin: 10
         anchors.rightMargin: 5
         spacing: 4
         clip: true
 
-        model: QueueModel
+        model: queueModel
 
         delegate: Item {
             width: ListView.view.width
-            height: 45
+            height: 50
 
             ItemDelegate {
                 id: queueItem
@@ -47,6 +102,29 @@ Item {
                     radius: 4
                     border.color: (index === PlayerController.currentIndex) ? "#f38ba8" : "transparent"
                     border.width: 1
+                }
+
+                AppMenu {
+                    id: songContextMenu
+                    property int songId: -1
+
+                    MenuItem {
+                        text: "Add Song to Playlist"
+                        onTriggered: {
+                                dialogManagerQueue.openChoosePlaylist(songContextMenu.songId, (album, sId) => {
+                                playlistService.addSongToPlaylist(album, Number(sId))
+                            })
+                        }
+                    }
+
+                    MenuItem {
+                        text: "Add Song to New Playlist"
+                        onTriggered: {
+                                dialogManagerQueue.openCreatePlaylist(songContextMenu.songId, (name, sId) => {
+                                playlistService.addSongToNewPlaylist(name, Number(sId))
+                            })
+                        }
+                    }
                 }
 
                 contentItem: RowLayout {
@@ -64,7 +142,7 @@ Item {
                         radius: 4
                         ImageRounded {
                             source: ShowInfo.miniCoverPath(Number(modelData))
-                                    || "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+                            sourceSize: 40
                         }
                     }
 
@@ -73,27 +151,48 @@ Item {
                         text: ShowInfo.title(Number(modelData))
                         color: (index === PlayerController.currentIndex) ? "#f38ba8" : "#cdd6f4"
                         font.bold: index === PlayerController.currentIndex
-                        font.pixelSize: 13
+                        font.pixelSize: 15
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                         Layout.alignment: Qt.AlignVCenter
                     }
 
                     // Duration
-                    Text {
-                        text: ShowInfo.duration(Number(modelData))
+                    Item {
+                        width: 30
+                        Layout.fillHeight: true
 
-                        color: "#a6adc8"
+                        Text {
+                            id: durationText
 
-                        font.pixelSize: 12
+                            text: ShowInfo.duration(Number(modelData))
 
-                        Layout.alignment:
-                            Qt.AlignVCenter
+                            color: "#a6adc8"
+
+                            font.pixelSize: 13
+
+                            anchors.centerIn: parent
+                            visible: !queueItem.hovered
+                        }
+
+                        IconButton {
+                            id: moreBtn
+                            anchors.centerIn: parent
+                            iconSource: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/buttonMoreList.svg"
+                            iconSize: 20
+
+                            visible: queueItem.hovered
+
+                            onClicked: {
+                                songContextMenu.songId = Number(modelData)
+                                songContextMenu.popup()
+                            }
+                        }
                     }
                 }
 
                 onClicked: {
-                    queueTabRoot.onItemSelected(index)
+                    queueTabRoot.itemSelected(index)
                 }
             }
         }

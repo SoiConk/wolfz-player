@@ -64,7 +64,7 @@ SongCover ExtractMetadata::getCover(const QString& path)
     QString tail = QFileInfo(path).suffix().toLower();
     QByteArray imageData;
 
-    if (tail == "mp3")
+    if (tail == "mp3" || tail == "wav")
         return hashSave(handleMP3Cover(path));
     if (tail == "flac")
         return hashSave(handleFLACCover(path));

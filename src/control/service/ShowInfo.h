@@ -3,69 +3,24 @@
 
 #include "data/model/Song.h"
 
-#include <QObject>
 #include <QtQml>
 #include <QList>
 #include <QHash>
-
-class QueueModel : public QAbstractListModel
-{
-    Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
-
-public:
-    enum Roles {
-        SongIdRole = Qt::UserRole + 1
-    };
-
-    explicit QueueModel(QObject* parent = nullptr);
-
-    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
-
-    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
-
-    QHash<int, QByteArray> roleNames() const override;
-
-    void reload();
-
-private:
-    QList<qint64> list;
-};
-
-class HistoryModel : public QAbstractListModel
-{
-    Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
-
-public:
-    enum Roles {
-        SongIdRole = Qt::UserRole + 1
-    };
-
-    explicit HistoryModel(QObject* parent = nullptr);
-
-    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
-
-    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
-
-    QHash<int, QByteArray> roleNames() const override;
-
-    void reload();
-
-private:
-    QList<qint64> list;
-};
+#include <QCache>
 
 class ShowInfo : public QObject {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
 private:
-    mutable QHash<qint64, SongShowInfo> cache;
+    mutable QCache<qint64, SongShowInfo> cache {1000};
+    mutable QCache<qint64, AlbumInfo> albumCache {200};
 
     const SongShowInfo& getOrCreate(qint64 songId) const;
+    const AlbumInfo& getOrCreateAlbum(qint64 albumId) const;
+
+    void clearCache();
+    void clearAlbumCache();
 
 public:
     explicit ShowInfo(QObject *parent = nullptr);
@@ -74,7 +29,13 @@ public:
     Q_INVOKABLE QString duration(qint64 songId) const;
     Q_INVOKABLE QString miniCoverPath(qint64 songId) const;
     Q_INVOKABLE QString coverPath(qint64 songId) const;
-    void clearCache();
+
+    Q_INVOKABLE QString name(qint64 albumId) const;
+    Q_INVOKABLE QString durations(qint64 albumId) const;
+    Q_INVOKABLE QString albumCoverPath(qint64 albumId) const;
+
+signals:
+    void reloadAlbumCache();
 };
 
 #endif

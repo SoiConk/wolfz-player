@@ -35,6 +35,15 @@ set(PROJECT_SOURCES
         src/control/service/ShowInfo.cpp
         src/control/service/ExtractMetadata.h
         src/control/service/ExtractMetadata.cpp
+        src/control/service/PlaylistService.h
+        src/control/service/PlaylistService.cpp
+
+        src/control/service/uimodel/HistoryModel.h
+        src/control/service/uimodel/HistoryModel.cpp
+        src/control/service/uimodel/QueueModel.h
+        src/control/service/uimodel/QueueModel.cpp
+        src/control/service/uimodel/PlaylistModel.h
+        src/control/service/uimodel/PlaylistModel.cpp
 
         src/data/player/MusicPlayer.cpp
         src/data/player/MusicPlayer.h
@@ -63,6 +72,7 @@ target_include_directories(Blueberry_Wolfz PUBLIC
     src
     src/control/logic
     src/control/service
+    src/control/service/uimodel
 )
 
 file(GLOB_RECURSE ALL_QML_FILES CONFIGURE_DEPENDS

@@ -18,10 +18,12 @@ Rectangle {
         title: "Select Audio file"
         currentFolder: MusicLoader.lastFolder
         nameFilters: [
-            "Audio files (*.mp3 *.flac *.wav *.aac *.ogg)",
+            "Audio files (*.mp3 *.flac *.wav *.m4a *.mp4 *.wma *.asf)",
             "MP3 files (*.mp3)",
             "FLAC files (*.flac)",
-            "WAV files (*.wav)"
+            "WAV files (*.wav)",
+            "M4A files (*.m4a *.mp4)",
+            "ASF files (*.wma *.asf)"
         ]
         onAccepted: {
             var path = selectedFile.toString();
@@ -149,35 +151,9 @@ Rectangle {
                 Layout.alignment: Qt.AlignVCenter
                 clip: true
 
-                Image {
-                    id: miniCoverProfile
-                    sourceSize.width: 35
-                    sourceSize.height: 35
-                    anchors.fill: parent
-                    anchors.margins: parent.border.width
-                    fillMode: Image.PreserveAspectCrop
+                ImageRounded {
                     source: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/profileIcon.png"
-
-                    smooth: true
-                    visible: false
-                }
-
-                MultiEffect {
-                    source: miniCoverProfile
-                    anchors.fill: miniCoverProfile
-                    maskEnabled: true
-                    maskSource: mask
-                }
-
-                Rectangle {
-                    id: mask
-                    width: miniCoverProfile.width
-                    height: miniCoverProfile.height
-                    radius: 17
-                    color: "black"
-                    layer.enabled: true
-                    visible: false
-                    antialiasing: true
+                    sourceSize: 35
                 }
             }
         }

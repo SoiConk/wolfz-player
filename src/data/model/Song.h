@@ -5,24 +5,6 @@
 #include <QtGlobal>
 #include <QList>
 
-struct Song
-{
-    QString path;
-    qint64 songId = -1;
-    QString title;
-    QString artist;
-    qint64 duration = 0;
-    qint64 artworkId = -1;
-
-    Song() = default;
-    explicit Song(const QString& path,
-         qint64 songId,
-         const QString& title,
-         const QString& artist,
-         qint64 duration,
-         qint64 artworkId);
-};
-
 struct SongCover
 {
     QString hash;
@@ -59,19 +41,15 @@ struct SongShowInfo
                       const QString& miniCoverPath);
 };
 
-struct Album
+struct AlbumInfo
 {
-    qint64 albumId;
-    QString title;
-    QList<qint64> songIdList;
-    qint64 totalDuration;
+    QString name;
+    qint64 duration;
     QString albumCoverPath;
-    Album() = default;
-    explicit Album(qint64 albumId,
-                   const QList<qint64> title,
-                   const QList<qint64> songIdList,
-                   qint64 totalDuration,
-                   const QString& albumCoverPath);
+    AlbumInfo() = default;
+    explicit AlbumInfo(const QString& name,
+                       qint64 duration,
+                       const QString& albumCoverPath);
 };
 
 #endif // SONG_H

@@ -1,114 +1,26 @@
 #include "control/service/MetadataManager.h"
-#include "data/playlist/Queue.h"
-#include "data/playlist/History.h"
 #include "ShowInfo.h"
 
 #include <QDebug>
 
-QueueModel::QueueModel(QObject* parent) : QAbstractListModel(parent)
-{
-    qDebug() << "QueueModel created";
-    reload();
-    connect(&Queue::getInstance(), &Queue::changed, &MetadataManager::getInstance(), &MetadataManager::setQueue);
-    connect(&Queue::getInstance(), &Queue::changed, this, &QueueModel::reload);
-}
-
-int QueueModel::rowCount(const QModelIndex& parent) const
-{
-    if (parent.isValid())
-        return 0;
-
-    return list.size();
-}
-
-QVariant QueueModel::data(const QModelIndex& index, int role) const
-{
-    if (!index.isValid() || index.row() >= list.size())
-        return {};
-
-    if (role == SongIdRole)
-        return QVariant::fromValue(list[index.row()]);
-
-    return {};
-}
-
-
-QHash<int, QByteArray> QueueModel::roleNames() const
-{
-    return {
-        {SongIdRole, "songId"}
-    };
-}
-
-
-void QueueModel::reload()
-{
-    QList<qint64> newList = Queue::getInstance().getList();
-
-    beginResetModel();
-
-    list = newList;
-
-    endResetModel();
-}
-
-HistoryModel::HistoryModel(QObject* parent) : QAbstractListModel(parent)
-{
-    reload();
-    connect(&History::getInstance(), &History::changedHistory, this, &HistoryModel::reload);
-    connect(&History::getInstance(), &History::changedHistory, &MetadataManager::getInstance(), &MetadataManager::setHistory);
-}
-
-int HistoryModel::rowCount(const QModelIndex& parent) const
-{
-    if (parent.isValid())
-        return 0;
-
-    return list.size();
-}
-
-QVariant HistoryModel::data(const QModelIndex& index, int role) const
-{
-    if (!index.isValid() || index.row() >= list.size())
-        return {};
-
-    if (role == SongIdRole)
-        return QVariant::fromValue(list[index.row()]);
-
-    return {};
-}
-
-
-QHash<int, QByteArray> HistoryModel::roleNames() const
-{
-    return {
-        {SongIdRole, "songId"}
-    };
-}
-
-
-void HistoryModel::reload()
-{
-    QList<qint64> newList = History::getInstance().getAll();
-
-    beginResetModel();
-
-    list = newList;
-
-    endResetModel();
-}
-
 ShowInfo::ShowInfo(QObject* parent) : QObject(parent)
 {
-    connect(&Queue::getInstance(), &Queue::changed, this, &ShowInfo::clearCache);
+    connect(&MetadataManager::getInstance(), &MetadataManager::clearInfoCache, this, &ShowInfo::clearCache);
+    connect(&MetadataManager::getInstance(), &MetadataManager::clearedAlbumCache, this, &ShowInfo::clearAlbumCache);
+    connect(this, &ShowInfo::reloadAlbumCache, &MetadataManager::getInstance(), &MetadataManager::reloadAlbum);
 }
 
-const SongShowInfo& ShowInfo::getOrCreate(qint64 songId) const {
-    if (!cache.contains(songId))
+const SongShowInfo& ShowInfo::getOrCreate(qint64 songId) const
+{
+    SongShowInfo* info = cache.object(songId);
+    if (info != nullptr)
     {
-        cache.insert(songId, MetadataManager::getInstance().getMetadata(songId));
+        return *info;
     }
-    return cache[songId];
+
+    SongShowInfo data = MetadataManager::getInstance().getMetadata(songId);
+    cache.insert(songId, new SongShowInfo(data));
+    return *cache.object(songId);
 }
 
 QString ShowInfo::title(qint64 songId) const
@@ -149,4 +61,55 @@ QString ShowInfo::coverPath(qint64 songId) const
 void ShowInfo::clearCache()
 {
     cache.clear();
+}
+
+const AlbumInfo& ShowInfo::getOrCreateAlbum(qint64 albumId) const
+{
+    AlbumInfo* info = albumCache.object(albumId);
+    if (info != nullptr)
+    {
+        return *info;
+    }
+
+    AlbumInfo data = MetadataManager::getInstance().getAlbumInfo(albumId);
+    albumCache.insert(albumId, new AlbumInfo(data));
+    return *albumCache.object(albumId);
+}
+
+QString ShowInfo::name(qint64 albumId) const
+{
+    return getOrCreateAlbum(albumId).name;
+}
+
+QString ShowInfo::durations(qint64 albumId) const
+{
+    qint64 ms = getOrCreateAlbum(albumId).duration;
+    qint64 totalSeconds = ms / 1000;
+
+    qint64 hours = totalSeconds / 3600;
+    qint64 minutes = (totalSeconds % 3600) / 60;
+    qint64 seconds = totalSeconds % 60;
+
+    if (hours > 0) {
+        return QString("%1:%2:%3")
+        .arg(hours)
+            .arg(minutes, 2, 10, QChar('0'))
+            .arg(seconds, 2, 10, QChar('0'));
+    }
+
+    return QString("%1:%2")
+        .arg(minutes)
+        .arg(seconds, 2, 10, QChar('0'));
+}
+
+QString ShowInfo::albumCoverPath(qint64 albumId) const
+{
+    QString path = getOrCreateAlbum(albumId).albumCoverPath;
+    return !path.isEmpty() ? "file:///" + path : "";
+}
+
+void ShowInfo::clearAlbumCache()
+{
+    albumCache.clear();
+    emit reloadAlbumCache();
 }

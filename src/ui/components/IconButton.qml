@@ -17,8 +17,8 @@ Item {
         anchors.fill: parent
         radius: width / 2
         color: parent.hoverColor
-        opacity: mouseArea.pressed ? 0.8 : 0
-
+        opacity: mouseArea.pressed ? 0.8
+                                   : mouseArea.containsMouse ? 0.4 : 0
     }
 
     Image {
@@ -42,7 +42,12 @@ Item {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
+        propagateComposedEvents: false   // 🔥 QUAN TRỌNG
+        preventStealing: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: root.clicked()
+        onClicked: (mouse) => {
+            mouse.accepted = true
+            root.clicked()
+        }
     }
 }

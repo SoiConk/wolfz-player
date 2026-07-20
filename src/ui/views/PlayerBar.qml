@@ -17,7 +17,7 @@ Rectangle {
     }
     property bool isPlaying: PlayerController.currentSong !== -1
 
-    ProgressBar {
+    CustomSlider {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -58,7 +58,8 @@ Rectangle {
 
                 ImageRounded {
                     source: ShowInfo.miniCoverPath(PlayerController.currentSong)
-                            || "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+                    sourceSize: 45
+                    showDefaultOnEmpty: true
                 }
             }
 
@@ -149,7 +150,7 @@ Rectangle {
                 onClicked: PlayerController.toggleMute()
             }
 
-            ProgressBar {
+            CustomSlider {
                 id: volumeSlider
                 Layout.preferredWidth: 150
                 Layout.alignment: Qt.AlignVCenter

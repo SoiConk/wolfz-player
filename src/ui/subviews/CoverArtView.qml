@@ -19,7 +19,8 @@ Rectangle {
 
         ImageRounded {
             source: ShowInfo.coverPath(PlayerController.currentSong)
-                    || "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+            sourceSize: 832
+            showDefaultOnEmpty: true
         }
     }
 }

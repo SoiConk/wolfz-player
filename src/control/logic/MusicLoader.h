@@ -29,6 +29,7 @@ public:
 
     QUrl lastFolder() const;
     Q_INVOKABLE void loadId(qint64 songId);
+    Q_INVOKABLE void openPlaylist(qint64 playlistId, int index);
 
 signals:
     void fileLoaded(const QString &paths);

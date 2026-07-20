@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QHash>
+#include <QCollator>
 
 
 
@@ -44,8 +45,11 @@ void MusicLoader::openFolder(const QString &folderPath)
     QFileInfo bestFile;
     QString currentBase;
 
-    std::sort(files.begin(), files.end(), [](const QFileInfo &a, const QFileInfo &b) {
-        return a.completeBaseName() < b.completeBaseName();
+    QCollator collator;
+    collator.setNumericMode(true);
+
+    std::sort(files.begin(), files.end(), [&collator](const QFileInfo &a, const QFileInfo &b) {
+        return collator.compare(a.completeBaseName(), b.completeBaseName()) < 0;
     });
 
     for (const QFileInfo &file : std::as_const(files)) {
@@ -97,4 +101,21 @@ int MusicLoader::rankFilter(const QString& suffix)
     };
 
     return rank.value(suffix.toLower(), 0);
+}
+
+void MusicLoader::openPlaylist(qint64 playlistId, int index)
+{
+    if (playlistId < 0) return;
+    Queue& instance = Queue::getInstance();
+    QList<qint64> list = MetadataManager::getInstance().getSongList(playlistId);
+
+    if (list == instance.getList() && index == instance.getIndex()) {
+        return;
+    }
+
+    if (list != instance.getList()) {
+        instance.addList(list);
+    }
+
+    instance.setIndex(index);
 }

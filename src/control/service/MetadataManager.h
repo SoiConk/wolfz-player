@@ -29,10 +29,28 @@ public:
     SongShowInfo getMetadata(qint64 songId) const;
     QString getCoverPath(qint64 songId) const;
     void addSongId(qint64 songId);
-
 signals:
     void songReady(qint64 songId);
     void queueReady(QList<qint64> listId);
+    void clearInfoCache();
+
+public:
+    qint64 addNewPlaylist(const QString& name);
+    void addSongPlaylist(qint64 playlistId, qint64 songId);
+    void addSongList(qint64 playlistId, const QList<qint64>& songList);
+    QList<qint64> getSongList(qint64 playlistId);
+    void removeSong(qint64 playlistId, qint64 songId);
+    void moveSong(qint64 playlistId, int from, int to);
+    void removePlaylist(qint64 playlistId);
+    void setPlaylistCover(qint64 playlistId, const QString& coverPath);
+    QList<qint64> getAlbum() const;
+    AlbumInfo getAlbumInfo(qint64 playlistId) const;
+    void reloadAlbum();
+
+signals:
+    void albumUpdate();
+    void clearedAlbumCache();
+    void playlistUpdate();
 
 private:
     explicit MetadataManager();

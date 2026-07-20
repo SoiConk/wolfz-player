@@ -10,6 +10,9 @@ Item {
     Layout.fillHeight: true
 
     signal playRequested(int songId)
+    HistoryModel {
+            id: historyModel
+    }
 
     Text {
         text: "EMPTY"
@@ -26,11 +29,11 @@ Item {
         anchors.rightMargin: 5
         spacing: 4
         clip: true
-        model: HistoryModel
+        model: historyModel
 
         delegate: Item {
             width: ListView.view.width
-            height: 45
+            height: 50
 
             ItemDelegate {
                 id: historyItem
@@ -62,7 +65,7 @@ Item {
                         radius: 4
                         ImageRounded {
                             source: ShowInfo.miniCoverPath(Number(modelData))
-                                    || "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/defaultCoverArt.png"
+                            sourceSize: 40
                         }
                     }
 
@@ -71,7 +74,7 @@ Item {
                         text: ShowInfo.title(Number(modelData))
                         color: index === 0 ? "#f38ba8" : "#cdd6f4"
                         font.bold: index === 0
-                        font.pixelSize: 13
+                        font.pixelSize: 15
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                         Layout.alignment: Qt.AlignVCenter
@@ -83,7 +86,7 @@ Item {
 
                         color: "#a6adc8"
 
-                        font.pixelSize: 12
+                        font.pixelSize: 13
 
                         Layout.alignment:
                             Qt.AlignVCenter

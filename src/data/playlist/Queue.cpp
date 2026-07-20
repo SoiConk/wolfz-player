@@ -28,6 +28,8 @@ void Queue::addList(const QList<qint64> &listId)
 {
     if (listId == list)
         return;
+    if (listId.isEmpty())
+        return;
     list = listId;
     index = list.isEmpty() ? 1 : 0;
     if (index == -1)
@@ -92,8 +94,6 @@ bool Queue::isEmpty() const
 
 bool Queue::setIndex(int i)
 {
-    if (i == index)
-        return false;
     index = i;
     emit changedIndex(index);
     return true;

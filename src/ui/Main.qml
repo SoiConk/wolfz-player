@@ -13,6 +13,14 @@ ApplicationWindow {
     minimumHeight: 580
     title: "Blueberry Wolfz"
 
+    AlbumModel {
+        id: albumModel
+    }
+
+    PlaylistService {
+        id: playlistService
+    }
+
     ColumnLayout {
         anchors.fill: parent
         spacing: 0

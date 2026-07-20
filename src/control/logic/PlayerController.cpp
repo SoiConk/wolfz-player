@@ -24,6 +24,10 @@ PlayerController::PlayerController(QObject *parent) : QObject(parent) {
 
     //Toggle play
     connect(player, &MusicPlayer::stateChanged, this, &PlayerController::handlePlayerStateChanged);
+
+    //Update Queue & History DB
+    connect(&Queue::getInstance(), &Queue::changed, &MetadataManager::getInstance(), &MetadataManager::setQueue);
+    connect(&History::getInstance(), &History::changedHistory, &MetadataManager::getInstance(), &MetadataManager::setHistory);
 }
 
 /*
@@ -55,8 +59,10 @@ void PlayerController::playNext()
 
 void PlayerController::playAt(int index)
 {
-    if (Queue::getInstance().setIndex(index))
-        playCurrent();
+    if (index == currentIndex())
+        return;
+    Queue::getInstance().setIndex(index);
+    playCurrent();
 }
 
 qint64 PlayerController::currentSong()

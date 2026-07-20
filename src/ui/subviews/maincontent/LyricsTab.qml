@@ -10,13 +10,6 @@ Item {
         width: parent.width * 0.8
 
         Text {
-            text: "🎤"
-            font.pixelSize: 32
-            Layout.alignment: Qt.AlignHCenter
-            opacity: 0.5
-        }
-
-        Text {
             text: "WIP"
             color: "#6c7086"
             font.pixelSize: 13
