@@ -13,7 +13,7 @@ public:
     Q_INVOKABLE void addSongToPlaylist(qint64 playlistId, qint64 songId);
     Q_INVOKABLE void addSongToNewPlaylist(const QString& name, qint64 songId);
     Q_INVOKABLE void createPlaylist(const QString& name);
-    Q_INVOKABLE void createPlaylistFromQueue(const QString& name);
+    Q_INVOKABLE void addQueueToNewPlaylist(const QString& name);
     Q_INVOKABLE void addQueueToPlaylist(qint64 playlistId);
     Q_INVOKABLE void removeSong(qint64 playlistId, qint64 songId);
     Q_INVOKABLE void moveSong(qint64 playlistId, int from, int to);

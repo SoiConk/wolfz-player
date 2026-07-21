@@ -35,7 +35,7 @@ void PlaylistService::createPlaylist(const QString& name)
     playlist.addNewList(name);
 }
 
-void PlaylistService::createPlaylistFromQueue(const QString& name)
+void PlaylistService::addQueueToNewPlaylist(const QString& name)
 {
     if (name.isEmpty()) return;
 
