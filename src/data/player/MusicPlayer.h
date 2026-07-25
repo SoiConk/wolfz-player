@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QMediaDevices>
 
 class MusicPlayer : public QObject
 {
@@ -33,6 +34,10 @@ signals:
 private:
     QMediaPlayer *player;
     QAudioOutput *audioOutput;
+    QMediaDevices mediaDevices;
+
+private slots:
+    void handleAudioDeviceChanged();
 };
 
 #endif

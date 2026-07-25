@@ -1,5 +1,6 @@
 #include "MusicPlayer.h"
 #include <QUrl>
+#include <QAudioDevice>
 
 MusicPlayer::MusicPlayer(QObject *parent)
     : QObject(parent)
@@ -9,20 +10,17 @@ MusicPlayer::MusicPlayer(QObject *parent)
 
     player->setAudioOutput(audioOutput);
 
-    connect(player, &QMediaPlayer::positionChanged,
-            this, &MusicPlayer::positionChanged);
+    connect(player, &QMediaPlayer::positionChanged, this, &MusicPlayer::positionChanged);
 
-    connect(player, &QMediaPlayer::durationChanged,
-            this, &MusicPlayer::durationChanged);
+    connect(player, &QMediaPlayer::durationChanged, this, &MusicPlayer::durationChanged);
 
-    connect(player, &QMediaPlayer::playbackStateChanged,
-            this, &MusicPlayer::stateChanged);
+    connect(player, &QMediaPlayer::playbackStateChanged, this, &MusicPlayer::stateChanged);
 
-    connect(player, &QMediaPlayer::mediaStatusChanged, this,
-            [this](QMediaPlayer::MediaStatus status){
+    connect(player, &QMediaPlayer::mediaStatusChanged, this, [this](QMediaPlayer::MediaStatus status){
                 if (status == QMediaPlayer::EndOfMedia)
                     emit mediaFinished();
             });
+    connect(&mediaDevices, &QMediaDevices::audioOutputsChanged, this, &MusicPlayer::handleAudioDeviceChanged);
 }
 
 void MusicPlayer::load(const QString &filePath)
@@ -73,4 +71,21 @@ qint64 MusicPlayer::duration() const
 qint64 MusicPlayer::position() const
 {
     return player->position();
+}
+
+void MusicPlayer::handleAudioDeviceChanged()
+{
+    QList<QAudioDevice> devices = mediaDevices.audioOutputs();
+    if (devices.isEmpty())
+        return;
+
+    QAudioDevice defaultDevice = mediaDevices.defaultAudioOutput();
+
+    float vol = audioOutput->volume();
+
+    delete audioOutput;
+    audioOutput = new QAudioOutput(defaultDevice, this);
+    audioOutput->setVolume(vol);
+
+    player->setAudioOutput(audioOutput);
 }
