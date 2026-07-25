@@ -61,10 +61,6 @@ The theme follows Catppuccin Mocha's dark pastel color scheme, providing a consi
 
 Theme colors are centralized through a QML theme manager, allowing UI components to share the same color definitions and making future theme customization easier.
 
-Color palette source:
-
-- Catppuccin Mocha: https://catppuccin.com/palette/
-
 ---
 
 ## Current Features
@@ -100,12 +96,16 @@ Blueberry_Wolfz
 │   │   ├── assets         # UI-related resources
 │   │   ├── components     # Reusable QML components
 │   │   ├── subviews       # Small, modular UI sections
-│   │   └── views          # Main screens & layouts
+│   │   ├── views          # Main screens & layouts
+│   │   └── themes         # Theme center for App build
 │   │
 │   ├── control
 │   │   ├── controllers    # Button control and logic
 │   │   └── services       # Database and info logic
 │   │       └── uimodel    # Playlist model that show in UI
+│   │
+│   ├── core               # App's setting (WIP)
+│   │
 │   └── data
 │       ├── models         # Data models
 │       ├── playlist       # Playlist, queue, history

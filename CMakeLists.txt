@@ -8,7 +8,6 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_QML_DEBUG")
 
 find_package(Qt6 REQUIRED COMPONENTS
     Quick
@@ -18,7 +17,7 @@ find_package(Qt6 REQUIRED COMPONENTS
     Concurrent
 )
 
-qt_standard_project_setup(REQUIRES 6.11.1)
+qt_standard_project_setup(REQUIRES ${Qt6_VERSION})
 
 find_package(TagLib REQUIRED)
 
@@ -45,6 +44,9 @@ set(PROJECT_SOURCES
         src/control/service/uimodel/QueueModel.cpp
         src/control/service/uimodel/PlaylistModel.h
         src/control/service/uimodel/PlaylistModel.cpp
+
+        src/core/AppState.h
+        src/core/AppState.cpp
 
         src/data/player/MusicPlayer.cpp
         src/data/player/MusicPlayer.h
@@ -88,7 +90,7 @@ file(GLOB IMAGE_RESOURCES CONFIGURE_DEPENDS
 )
 
 set_source_files_properties(
-    src/ui/theme/Theme.qml
+    src/ui/themes/Theme.qml
     PROPERTIES
         QT_QML_SINGLETON_TYPE TRUE
 )
