@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
 
     MetadataManager& instance = MetadataManager::getInstance();
     History::getInstance().addList(instance.getHistory());
+    History::getInstance().addPlaylistList(instance.getPlaylistHistory());
     Queue::getInstance().addList(instance.getQueue());
 
     QQmlApplicationEngine engine;

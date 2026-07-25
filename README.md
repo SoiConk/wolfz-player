@@ -53,6 +53,20 @@ Linux and macOS builds are planned but have not been fully tested yet.
 
 ---
 
+## Theme
+
+Blueberry Wolfz uses the [**Catppuccin Mocha**](https://catppuccin.com/) color palette as the foundation for its UI design.
+
+The theme follows Catppuccin Mocha's dark pastel color scheme, providing a consistent and comfortable visual style throughout the application.
+
+Theme colors are centralized through a QML theme manager, allowing UI components to share the same color definitions and making future theme customization easier.
+
+Color palette source:
+
+- Catppuccin Mocha: https://catppuccin.com/palette/
+
+---
+
 ## Current Features
 
 Currently implemented:

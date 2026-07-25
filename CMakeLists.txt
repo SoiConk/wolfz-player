@@ -87,6 +87,12 @@ file(GLOB IMAGE_RESOURCES CONFIGURE_DEPENDS
     "src/ui/assets/icons/*.svg"
 )
 
+set_source_files_properties(
+    src/ui/theme/Theme.qml
+    PROPERTIES
+        QT_QML_SINGLETON_TYPE TRUE
+)
+
 qt_add_qml_module(Blueberry_Wolfz
     URI Blueberry_Wolfz
     VERSION 1.0
