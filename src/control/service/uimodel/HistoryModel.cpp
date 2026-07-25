@@ -47,3 +47,47 @@ void HistoryModel::reload()
     endResetModel();
 }
 
+PlaylistHistoryModel::PlaylistHistoryModel(QObject* parent) : QAbstractListModel(parent)
+{
+    reload();
+    connect(&History::getInstance(), &History::changedPlaylistHistory, this, &PlaylistHistoryModel::reload);
+}
+
+int PlaylistHistoryModel::rowCount(const QModelIndex& parent) const
+{
+    if (parent.isValid())
+        return 0;
+
+    return list.size();
+}
+
+QVariant PlaylistHistoryModel::data(const QModelIndex& index, int role) const
+{
+    if (!index.isValid() || index.row() >= list.size())
+        return {};
+
+    if (role == PlaylistIdRole)
+        return QVariant::fromValue(list[index.row()]);
+
+    return {};
+}
+
+
+QHash<int, QByteArray> PlaylistHistoryModel::roleNames() const
+{
+    return {
+        {PlaylistIdRole, "songId"}
+    };
+}
+
+
+void PlaylistHistoryModel::reload()
+{
+    QList<qint64> newList = History::getInstance().getAllPlaylist();
+
+    beginResetModel();
+
+    list = newList;
+
+    endResetModel();
+}

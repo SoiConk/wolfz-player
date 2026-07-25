@@ -10,13 +10,18 @@ Item {
     Layout.fillHeight: true
 
     signal playRequested(int songId)
+
     HistoryModel {
             id: historyModel
     }
 
+    DialogManager {
+        id: dialogManagerHistory
+    }
+
     Text {
         text: "EMPTY"
-        color: "#6c7086"
+        color: Theme.accent
         font.pixelSize: 40
         anchors.centerIn: parent
         visible: historyListView.count === 0
@@ -31,92 +36,115 @@ Item {
         clip: true
         model: historyModel
 
-        delegate: Item {
-            width: ListView.view.width
+        delegate: ItemDelegate {
+            id: historyItem
+
+            width: historyListView.width - 10
             height: 50
+            anchors.rightMargin: 10
 
-            ItemDelegate {
-                id: historyItem
+            background: Rectangle {
+                color: index === 0
+                    ? Theme.surfaceHover
+                    : historyItem.hovered ? Theme.surfaceHover : "transparent"
+                radius: 4
+                border.color: index === 0 ? Theme.accent : "transparent"
+                border.width: 1
+            }
 
-                anchors.fill: parent
-                anchors.rightMargin: 10
+            AppMenu {
+                id: songContextMenu
+                property int songId: -1
 
-                background: Rectangle {
-                    color: index === 0
-                        ? "#2e3148"
-                        : historyItem.hovered ? "#252538" : "transparent"
-                    radius: 4
-                    border.color: index === 0 ? "#f38ba8" : "transparent"
-                    border.width: 1
+                MenuItem {
+                    text: "Add Song to Playlist"
+                    onTriggered: {
+                            dialogManagerHistory.openChoosePlaylist(songContextMenu.songId, (album, sId) => {
+                            playlistService.addSongToPlaylist(album, Number(sId))
+                        })
+                    }
                 }
 
-                contentItem: RowLayout {
-                    anchors.fill: parent
-                    anchors.leftMargin: 10
-                    anchors.rightMargin: 10
-                    spacing: 10
-
-                    // Minicover
-                    Rectangle {
-                        id: miniCoverContainer
-
-                        width: 40
-                        height: width
-                        radius: 4
-                        ImageRounded {
-                            source: ShowInfo.miniCoverPath(Number(modelData))
-                            sourceSize: 40
-                        }
+                MenuItem {
+                    text: "Add Song to New Playlist"
+                    onTriggered: {
+                            dialogManagerHistory.openCreatePlaylist(songContextMenu.songId, (name, sId) => {
+                            playlistService.addSongToNewPlaylist(name, Number(sId))
+                        })
                     }
+                }
+            }
 
-                    // Name
-                    Text {
-                        text: ShowInfo.title(Number(modelData))
-                        color: index === 0 ? "#f38ba8" : "#cdd6f4"
-                        font.bold: index === 0
-                        font.pixelSize: 15
-                        elide: Text.ElideRight
-                        Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignVCenter
+            contentItem: RowLayout {
+                anchors.fill: parent
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+                spacing: 10
+
+                // Minicover
+                Rectangle {
+                    id: miniCoverContainer
+                    color: "transparent"
+
+                    width: 40
+                    height: width
+                    radius: 4
+                    ImageRounded {
+                        source: ShowInfo.miniCoverPath(Number(modelData))
+                        sourceSize: 40
                     }
+                }
 
-                    // Duration
+                // Name
+                Text {
+                    text: ShowInfo.title(Number(modelData))
+                    color: index === 0 ? Theme.accent : Theme.text
+                    font.bold: index === 0
+                    font.pixelSize: 15
+                    elide: Text.ElideRight
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignVCenter
+                }
+
+                // Duration
+                Item {
+                    width: 30
+                    Layout.fillHeight: true
+
                     Text {
+                        id: durationText
+
                         text: ShowInfo.duration(Number(modelData))
 
-                        color: "#a6adc8"
+                        color: Theme.subtext
 
                         font.pixelSize: 13
 
-                        Layout.alignment:
-                            Qt.AlignVCenter
+                        anchors.centerIn: parent
+                        visible: !historyItem.hovered
+                    }
+
+                    IconButton {
+                        id: moreBtn
+                        anchors.centerIn: parent
+                        iconSource: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/buttonMoreList.svg"
+                        iconSize: 20
+
+                        visible: historyItem.hovered
+
+                        onClicked: {
+                            songContextMenu.songId = Number(modelData)
+                            songContextMenu.popup()
+                        }
                     }
                 }
-
-                onClicked: {
-                    historyTabRoot.playRequested(Number(modelData))
-                }
             }
+
+            onClicked: {
+                historyTabRoot.playRequested(Number(modelData))
+            }
+
         }
-
-        ScrollBar.vertical: ScrollBar {
-            id: historyScrollBar
-
-            policy: ScrollBar.AsNeeded
-
-            width: 10
-
-            contentItem: Rectangle {
-                implicitWidth: 10
-                radius: 4
-                color: "#6c7086"
-
-                opacity: historyScrollBar.pressed ? 0.9 : 0.5
-            }
-
-            background: Rectangle {
-                color: "transparent"
-            }
-        }
+        ScrollBar.vertical: CustomScrollBar {}
     }
 }
