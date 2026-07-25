@@ -8,14 +8,21 @@ ScrollBar {
 
     policy: ScrollBar.AsNeeded
 
-    width: 10
+    width: hovered || pressed ? 10 : 6
 
     contentItem: Rectangle {
         implicitWidth: root.width
         radius: 5
         color: Theme.subtext
 
-        opacity: root.pressed ? 0.9 : 0.5
+        opacity: root.pressed ? 0.9
+                              : root.hovered ? 0.7 : 0.2
+        Behavior on opacity {
+            NumberAnimation { duration: 150 }
+        }
+        Behavior on implicitWidth {
+            NumberAnimation { duration: 150 }
+        }
     }
 
     background: Rectangle {
