@@ -14,13 +14,8 @@ class ShowInfo : public QObject {
     QML_SINGLETON
 private:
     mutable QCache<qint64, SongShowInfo> cache {1000};
-    mutable QCache<qint64, AlbumInfo> albumCache {200};
-
     const SongShowInfo& getOrCreate(qint64 songId) const;
-    const AlbumInfo& getOrCreateAlbum(qint64 albumId) const;
-
     void clearCache();
-    void clearAlbumCache();
 
 public:
     explicit ShowInfo(QObject *parent = nullptr);
@@ -30,6 +25,12 @@ public:
     Q_INVOKABLE QString miniCoverPath(qint64 songId) const;
     Q_INVOKABLE QString coverPath(qint64 songId) const;
 
+private:
+    mutable QCache<qint64, AlbumInfo> albumCache {200};
+    const AlbumInfo& getOrCreateAlbum(qint64 albumId) const;
+    void clearAlbumCache();
+
+public:
     Q_INVOKABLE QString name(qint64 albumId) const;
     Q_INVOKABLE QString durations(qint64 albumId) const;
     Q_INVOKABLE QString albumCoverPath(qint64 albumId) const;

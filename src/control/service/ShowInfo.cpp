@@ -92,7 +92,7 @@ QString ShowInfo::durations(qint64 albumId) const
 
     if (hours > 0) {
         return QString("%1:%2:%3")
-        .arg(hours)
+            .arg(hours)
             .arg(minutes, 2, 10, QChar('0'))
             .arg(seconds, 2, 10, QChar('0'));
     }

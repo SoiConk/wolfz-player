@@ -6,14 +6,6 @@
 #include <QStringList>
 #include <QtQml>
 
-enum class AudioFormat : int {
-    Unknown = 0,
-    WMA  = 1,
-    MP3  = 2,
-    M4A  = 3,
-    FLAC = 4
-};
-
 class MusicLoader : public QObject {
     Q_OBJECT
     QML_ELEMENT
@@ -38,7 +30,6 @@ signals:
 
 private:
     int rankFilter(const QString& suffix);
-    QStringList filterList(const QFileInfoList& files);
 private:
     QUrl folder;
 };

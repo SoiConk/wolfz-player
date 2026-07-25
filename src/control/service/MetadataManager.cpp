@@ -1,5 +1,7 @@
 #include "MetadataManager.h"
 
+#include <control/service/ExtractMetadata.h>
+
 #include <QSqlQuery>
 #include <QSqlError>
 
@@ -67,18 +69,6 @@ void MetadataManager::initDatabase()
         );
     )");
 
-    query.exec(R"(CREATE TABLE IF NOT EXISTS queue(
-            id INTEGER PRIMARY KEY,
-            songId INTEGER
-        );
-    )");
-
-    query.exec(R"(CREATE TABLE IF NOT EXISTS history(
-            id INTEGER PRIMARY KEY,
-            songId INTEGER
-        );
-    )");
-
     query.exec(R"(CREATE TABLE IF NOT EXISTS playlists (
             playlistId INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
@@ -87,12 +77,44 @@ void MetadataManager::initDatabase()
         );
     )");
 
+    query.exec(R"(CREATE TABLE IF NOT EXISTS queue(
+            id INTEGER PRIMARY KEY,
+            songId INTEGER,
+            FOREIGN KEY (songId)
+                REFERENCES songs(songId)
+                ON DELETE CASCADE
+        );
+    )");
+
+    query.exec(R"(CREATE TABLE IF NOT EXISTS history(
+            id INTEGER PRIMARY KEY,
+            songId INTEGER,
+            FOREIGN KEY (songId)
+                REFERENCES songs(songId)
+                ON DELETE CASCADE
+        );
+    )");
+
+    query.exec(R"(CREATE TABLE IF NOT EXISTS history_playlist(
+            id INTEGER PRIMARY KEY,
+            playlistId INTEGER,
+            FOREIGN KEY (playlistId)
+                REFERENCES playlists(playlistId)
+                ON DELETE CASCADE
+        );
+    )");
+
     query.exec(R"(CREATE TABLE IF NOT EXISTS playlist_songs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             position INTEGER,
             playlistId INTEGER,
             songId INTEGER,
-            FOREIGN KEY (playlistId) REFERENCES playlists(playlistId)
+            FOREIGN KEY (playlistId)
+                REFERENCES playlists(playlistId)
+                ON DELETE CASCADE,
+            FOREIGN KEY (songId)
+                REFERENCES songs(songId)
+                ON DELETE CASCADE
         );
     )");
 
@@ -301,11 +323,13 @@ qint64 MetadataManager::insertSong(const QString& path)
 
 SongInfo MetadataManager::getSongInfo(const QString& path)
 {
+    ExtractMetadata metadata;
     return metadata.getInfo(path);
 }
 
 qint64 MetadataManager::getArtworkId(const QString& path, QSqlDatabase &db)
 {
+    ExtractMetadata metadata;
     SongCover songCover = metadata.getCover(path);
     if (songCover.hash.isEmpty()) {
         return -1;
@@ -334,62 +358,22 @@ qint64 MetadataManager::getArtworkId(const QString& path, QSqlDatabase &db)
 
 QList<qint64> MetadataManager::getQueue() const
 {
-    QList<qint64> result;
-
-    QSqlQuery query(database);
-    query.exec("SELECT songId FROM queue ORDER BY id ASC");
-
-    while (query.next()) {
-        result.append(query.value(0).toLongLong());
-    }
-
-    return result;
+    return getListFromTable("queue", "songId");
 }
 
-void MetadataManager::setQueue(QList<qint64> queue)
+void MetadataManager::setQueue(const QList<qint64>& queue)
 {
-    QSqlQuery query(database);
-
-    database.transaction();
-    query.exec("DELETE FROM queue");
-
-    query.prepare("INSERT INTO queue(songId) VALUES (?)");
-
-    for (qint64 id : queue) {
-        query.bindValue(0, id);
-        query.exec();
-    }
-    database.commit();
+    setListToTable("queue", "songId", queue);
 }
 
 QList<qint64> MetadataManager::getHistory() const
 {
-    QList<qint64> result;
-
-    QSqlQuery query(database);
-    query.exec("SELECT songId FROM history ORDER BY id ASC");
-
-    while (query.next()) {
-        result.append(query.value(0).toLongLong());
-    }
-
-    return result;
+    return getListFromTable("history", "songId");
 }
 
-void MetadataManager::setHistory(QList<qint64> history)
+void MetadataManager::setHistory(const QList<qint64>& history)
 {
-    QSqlQuery query(database);
-
-    database.transaction();
-    query.exec("DELETE FROM history");
-
-    query.prepare("INSERT INTO history(songId) VALUES (?)");
-
-    for (qint64 id : history) {
-        query.bindValue(0, id);
-        query.exec();
-    }
-    database.commit();
+    setListToTable("history", "songId", history);
 }
 
 SongShowInfo MetadataManager::getMetadata(qint64 songId) const
@@ -470,18 +454,6 @@ void MetadataManager::removeMissingSong(qint64 songId)
 
     database.transaction();
 
-    query.prepare("DELETE FROM playlist_songs WHERE songId = ?");
-    query.addBindValue(songId);
-    query.exec();
-
-    query.prepare("DELETE FROM queue WHERE songId = ?");
-    query.addBindValue(songId);
-    query.exec();
-
-    query.prepare("DELETE FROM history WHERE songId = ?");
-    query.addBindValue(songId);
-    query.exec();
-
     query.prepare("DELETE FROM songs WHERE songId = ?");
     query.addBindValue(songId);
     query.exec();
@@ -524,6 +496,40 @@ void MetadataManager::removeMissingSong(qint64 songId)
     pathCache.remove(songId);
     emit playlistUpdate();
     emit clearInfoCache();
+}
+
+QList<qint64> MetadataManager::getListFromTable(const QString& tableName, const QString& columnName) const
+{
+    QList<qint64> list;
+
+    QSqlQuery query(database);
+    query.exec(QString("SELECT %1 FROM %2 ORDER BY id ASC").arg(columnName, tableName));
+
+    while (query.next()) {
+        list.append(query.value(0).toLongLong());
+    }
+
+    return list;
+}
+
+void MetadataManager::setListToTable(const QString& tableName, const QString& columnName, const QList<qint64>& list)
+{
+    QSqlQuery query(database);
+
+    database.transaction();
+
+    query.exec(QString("DELETE FROM %1").arg(tableName));
+
+
+    query.prepare(QString("INSERT INTO %1(%2) VALUES (?)").arg(tableName, columnName));
+
+    for (qint64 id : list)
+    {
+        query.bindValue(0, id);
+        query.exec();
+    }
+
+    database.commit();
 }
 
 qint64 MetadataManager::addNewPlaylist(const QString& name)
@@ -743,23 +749,11 @@ void MetadataManager::removePlaylist(qint64 playlistId)
 
     database.transaction();
 
-    QSqlQuery deleteSongs(database);
-    deleteSongs.prepare(R"(
-        DELETE FROM playlist_songs
-        WHERE playlistId = ?
-    )");
-    deleteSongs.addBindValue(playlistId);
-
-    if (!deleteSongs.exec()) {
-        qDebug() << "removePlaylist - deleteSongs failed:" << deleteSongs.lastError().text();
-        database.rollback();
-        return;
-    }
-
     query.prepare(R"(
         DELETE FROM playlists
         WHERE playlistId = ?
     )");
+
     query.addBindValue(playlistId);
 
     if (!query.exec()) {
@@ -809,7 +803,7 @@ QList<qint64> MetadataManager::getAlbum() const
             playlistIds.append(id);
         }
     } else {
-        qWarning() << "Lỗi select playlistId:" << query.lastError().text();
+        qWarning() << "Error select playlistId:" << query.lastError().text();
     }
     return playlistIds;
 }
@@ -845,4 +839,14 @@ AlbumInfo MetadataManager::getAlbumInfo(qint64 playlistId) const
 void MetadataManager::reloadAlbum()
 {
     emit albumUpdate();
+}
+
+QList<qint64> MetadataManager::getPlaylistHistory() const
+{
+    return getListFromTable("history_playlist", "playlistId");
+}
+
+void MetadataManager::setPlaylistHistory(const QList<qint64>& history)
+{
+    setListToTable("history_playlist", "playlistId", history);
 }

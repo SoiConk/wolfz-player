@@ -3,7 +3,9 @@
 #include "control/service/MetadataManager.h"
 
 Playlist::Playlist(qint64 playlistId) : playlistId(playlistId)
-{}
+{
+    load(playlistId);
+}
 
 void Playlist::addSong(qint64 songId)
 {
@@ -34,7 +36,9 @@ void Playlist::load(qint64 albumId)
 
 void Playlist::removeSong(qint64 songId)
 {
-    list.removeAt(list.indexOf(songId));
+    int index = list.indexOf(songId);
+    if (index == -1) return;
+    list.removeAt(index);
     MetadataManager::getInstance().removeSong(playlistId, songId);
 }
 

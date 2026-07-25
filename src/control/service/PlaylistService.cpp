@@ -3,12 +3,10 @@
 #include "data/playlist/Playlist.h"
 #include "control/service/MetadataManager.h"
 #include "data/playlist/Queue.h"
-#include "ShowInfo.h"
 
 PlaylistService::PlaylistService(QObject* parent)
     : QObject(parent)
-{
-}
+{}
 
 void PlaylistService::addSongToPlaylist(qint64 playlistId, qint64 songId)
 {

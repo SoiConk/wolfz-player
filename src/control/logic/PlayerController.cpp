@@ -28,6 +28,7 @@ PlayerController::PlayerController(QObject *parent) : QObject(parent) {
     //Update Queue & History DB
     connect(&Queue::getInstance(), &Queue::changed, &MetadataManager::getInstance(), &MetadataManager::setQueue);
     connect(&History::getInstance(), &History::changedHistory, &MetadataManager::getInstance(), &MetadataManager::setHistory);
+    connect(&History::getInstance(), &History::changedPlaylistHistory, &MetadataManager::getInstance(), &MetadataManager::setPlaylistHistory);
 }
 
 /*

@@ -2,7 +2,6 @@
 #define METADATAMANAGER_H
 
 #include <data/model/Song.h>
-#include <control/service/ExtractMetadata.h>
 
 #include <QObject>
 #include <QHash>
@@ -22,9 +21,9 @@ public:
     QString getPathById(qint64 songId);
 
     QList<qint64> getQueue() const;
-    void setQueue(QList<qint64> queue);
+    void setQueue(const QList<qint64>& queue);
     QList<qint64> getHistory() const;
-    void setHistory(QList<qint64> history);
+    void setHistory(const QList<qint64>& history);
 
     SongShowInfo getMetadata(qint64 songId) const;
     QString getCoverPath(qint64 songId) const;
@@ -46,6 +45,8 @@ public:
     QList<qint64> getAlbum() const;
     AlbumInfo getAlbumInfo(qint64 playlistId) const;
     void reloadAlbum();
+    QList<qint64> getPlaylistHistory() const;
+    void setPlaylistHistory(const QList<qint64>& history);
 
 signals:
     void albumUpdate();
@@ -53,9 +54,6 @@ signals:
     void playlistUpdate();
 
 private:
-    explicit MetadataManager();
-    ~MetadataManager();
-
     void initDatabase();
     QString appDataPath() const;
 
@@ -68,16 +66,20 @@ private:
     qint64 getArtworkId(const QString& path, QSqlDatabase &db);
 
     void removeMissingSong(qint64 songId);
+    QList<qint64> getListFromTable(const QString& tableName, const QString& columnName) const;
+    void setListToTable(const QString& tableName, const QString& columnName, const QList<qint64>& list);
 
 private:
+    explicit MetadataManager();
+    ~MetadataManager();
     MetadataManager(const MetadataManager&) = delete;
+    MetadataManager(MetadataManager&&) = delete;
     MetadataManager& operator=(const MetadataManager&) = delete;
+    MetadataManager& operator=(MetadataManager&&) = delete;
 
     QSqlDatabase database;
 
     QHash<qint64, QString> pathCache;
-
-    ExtractMetadata metadata;
 };
 
 #endif // METADATAMANAGER_H

@@ -1,5 +1,6 @@
 #include "MusicLoader.h"
 #include <data/playlist/Queue.h>
+#include <data/playlist/History.h>
 #include <control/service/MetadataManager.h>
 
 #include <QFileInfo>
@@ -115,6 +116,7 @@ void MusicLoader::openPlaylist(qint64 playlistId, int index)
 
     if (list != instance.getList()) {
         instance.addList(list);
+        History::getInstance().addPlaylist(playlistId);
     }
 
     instance.setIndex(index);

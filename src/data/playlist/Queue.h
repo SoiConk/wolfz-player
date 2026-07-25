@@ -29,17 +29,21 @@ public:
     int getIndex() const;
 
     int size() const;
+
     void setIndexById(qint64 songId);
 
 signals:
-    void changedIndex(qint64 index);
+    void changedIndex(int index);
     void changed(QList<qint64> list);
 
 private:
     Queue() = default;
+    ~Queue() = default;
 
     Queue(const Queue&) = delete;
+    Queue(Queue&&) = delete;
     Queue& operator=(const Queue&) = delete;
+    Queue& operator=(Queue&&) = delete;
 
     QList<qint64> list;
     int index = -1;

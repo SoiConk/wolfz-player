@@ -44,25 +44,6 @@ qint64 Queue::current() const
     return list[index];
 }
 
-bool Queue::previous()
-{
-    if (index < 0) return false;
-
-    if (index == 0) {
-        if (isLoop) {
-            index = list.size() - 1;
-            emit changedIndex(index);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    index--;
-    emit changedIndex(index);
-    return true;
-}
-
 bool Queue::next()
 {
     if (index < 0) return false;
@@ -78,6 +59,25 @@ bool Queue::next()
     }
 
     index++;
+    emit changedIndex(index);
+    return true;
+}
+
+bool Queue::previous()
+{
+    if (index < 0) return false;
+
+    if (index == 0) {
+        if (isLoop) {
+            index = list.size() - 1;
+            emit changedIndex(index);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    index--;
     emit changedIndex(index);
     return true;
 }
