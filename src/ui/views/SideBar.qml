@@ -6,13 +6,17 @@ import QtQuick.Controls
 
 Rectangle {
     id: sideBarRoot
-    color: "#181825"
+    color: Theme.background
 
     // Property for Main.qml to control which content to show (0: Home, 1: Library, 2: About)
     property int currentMenuIndex: 0
 
     // Mini sidebar check
     readonly property bool isCollapsed: width < 100
+
+    PlaylistHistoryModel {
+        id: playlistHistoryModel
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -48,57 +52,66 @@ Rectangle {
             onClicked: sideBarRoot.currentMenuIndex = 2
         }
 
-        // Line
+        // Line Border
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: "#313244"
+            color: Theme.border
             Layout.topMargin: 10
             Layout.bottomMargin: 10
             visible: !sideBarRoot.isCollapsed
         }
 
         // Recent Library
-        ScrollView {
+        ListView {
             Layout.fillWidth: true
             Layout.fillHeight: true
+
             clip: true
+            spacing: 4
             visible: !sideBarRoot.isCollapsed
 
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 4
+            header: Text {
+                text: "RECENT PLAYLIST"
+                font.pixelSize: 11
+                font.bold: true
+                color: Theme.subtext
+                height: 25
+                leftPadding: 8
+            }
 
-                Text {
-                    text: "RECENT PLAYLIST"
-                    font.pixelSize: 11
-                    font.bold: true
-                    color: "#585b70"
-                    Layout.leftMargin: 8
-                    Layout.bottomMargin: 5
+            model: playlistHistoryModel
+
+            delegate: ItemDelegate {
+                id: playlistHistoryItem
+
+                width: ListView.view.width - 10
+                height: 50
+                anchors.rightMargin: 10
+                hoverEnabled: true
+
+                background: Rectangle {
+                    color: playlistHistoryItem.hovered ? Theme.surfaceHover : "transparent"
+                    radius: 4
+                    border.color: playlistHistoryItem.hovered ? Theme.border : "transparent"
+                    border.width: 1
                 }
 
-                Repeater {
-                    model: []
-                    delegate: Button {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 35
-                        flat: true
+                contentItem: Text {
+                    text: ShowInfo.name(Number(modelData))
+                    color: Theme.text
+                    font.pixelSize: 15
+                    elide: Text.ElideRight
+                    verticalAlignment: Text.AlignVCenter
+                }
 
-                        contentItem: Text {
-                            text: modelData
-                            color: "#a6adc8"
-                            font.pixelSize: 13
-                            elide: Text.ElideRight
-                            verticalAlignment: Text.AlignVCenter
-                        }
-
-                        onHoveredChanged: {
-                            contentItem.color = hovered ? "#cdd6f4" : "#a6adc8"
-                        }
-                    }
+                onClicked: {
+                    MusicLoader.openPlaylist(Number(modelData), 0)
                 }
             }
+
+            ScrollBar.vertical: CustomScrollBar {}
+
         }
 
         Item { Layout.fillHeight: sideBarRoot.isCollapsed }
@@ -108,6 +121,6 @@ Rectangle {
         anchors.right: parent.right
         height: parent.height
         width: 1
-        color: "#313244"
+        color: Theme.border
     }
 }

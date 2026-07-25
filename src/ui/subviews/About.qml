@@ -1,3 +1,5 @@
+import Blueberry_Wolfz 1.0
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -28,9 +30,9 @@ Item {
 
         readonly property int imageSize: isLarge ? 300 : 150
 
-        color: "#24273a"
+        color: Theme.surface
         radius: 24
-        border.color: "#494d64"
+        border.color: Theme.border
         border.width: 1
 
         RowLayout {
@@ -56,7 +58,7 @@ Item {
                 Text {
                     text: "Music player by <a href='https://github.com/SoiConK' style='color: #faec74;
                         text-decoration: none;'>Sói Con</a>"
-                    color: "#a5adcb"
+                    color: Theme.text
                     font.pixelSize: card.bodySize
                     textFormat: Text.RichText
                     onLinkActivated: Qt.openUrlExternally(link)
@@ -74,7 +76,7 @@ Item {
                             , "Running completely local"]
                         Text {
                             text: modelData
-                            color: "#a5adcb"
+                            color: Theme.text
                             font.pixelSize: card.bodySize
                         }
                     }
@@ -109,7 +111,7 @@ Item {
                     font.bold: true
                     Layout.alignment: Qt.AlignHCenter
                     style: Text.Outline
-                    styleColor: "#ffffff"
+                    styleColor: "white"
                 }
             }
         }

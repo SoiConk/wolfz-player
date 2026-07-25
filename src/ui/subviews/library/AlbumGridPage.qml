@@ -61,7 +61,7 @@ Item {
                         width: 180
                         height: 180
                         radius: 12
-                        color: "#313244"
+                        color: Theme.surfaceHover
                         opacity: !isAddItem ? 1 : delegateRoot.hovered ? 1 : 0.4
 
                         Loader {
@@ -111,7 +111,7 @@ Item {
 
                     Text {
                         text: isAddItem ? "Add Playlist" : ShowInfo.name(Number(modelData))
-                        color: "#cdd6f4"
+                        color: Theme.text
                         font.pixelSize: 18
                         font.bold: true
                         elide: Text.ElideRight
@@ -121,23 +121,7 @@ Item {
                 }
             }
 
-            ScrollBar.vertical: ScrollBar {
-                id: queueScrollBar
-
-                policy: ScrollBar.AsNeeded
-                width: 10
-
-                contentItem: Rectangle {
-                    implicitWidth: 10
-                    radius: 4
-                    color: "#6c7086"
-                    opacity: queueScrollBar.pressed ? 0.9 : 0.5
-                }
-
-                background: Rectangle {
-                    color: "transparent"
-                }
-            }
+            ScrollBar.vertical: CustomScrollBar {}
         }
     }
 }

@@ -9,7 +9,7 @@ import QtQuick.Effects
 
 Rectangle {
     id: topBarRoot
-    color: "#1e1e2e"
+    color: Theme.surface
 
     signal switchToHistory()
     // Select file or folder dialog
@@ -62,7 +62,7 @@ Rectangle {
                 width: 30
                 height: 30
                 radius: 12
-                color: "#1e1e2e"
+                color: "transparent"
 
                 Image {
                     id: appLogo
@@ -96,7 +96,7 @@ Rectangle {
 
                 contentItem: Text {
                     text: "Select File"
-                    color: btnSelectFile.hovered ? "#f5e0dc" : "#cdd6f4"
+                    color: btnSelectFile.hovered ? Theme.accent : Theme.text
                     font.pixelSize: 13
                     font.bold: true
                     verticalAlignment: Text.AlignVCenter
@@ -104,8 +104,8 @@ Rectangle {
                 }
 
                 background: Rectangle {
-                    color: btnSelectFile.pressed ? "#414356" : (btnSelectFile.hovered ? "#313244" : "#181825")
-                    border.color: "#313244"
+                    color: btnSelectFile.pressed ? Theme.border : (btnSelectFile.hovered ? Theme.surfaceHover : Theme.background)
+                    border.color: Theme.border
                     border.width: 1
                     radius: 6
                 }
@@ -121,7 +121,7 @@ Rectangle {
 
                 contentItem: Text {
                     text: "Select Folder"
-                    color: btnSelectFolder.hovered ? "#f5e0dc" : "#cdd6f4"
+                    color: btnSelectFolder.hovered ? Theme.accent : Theme.text
                     font.pixelSize: 13
                     font.bold: true
                     verticalAlignment: Text.AlignVCenter
@@ -129,8 +129,8 @@ Rectangle {
                 }
 
                 background: Rectangle {
-                    color: btnSelectFolder.pressed ? "#414356" : (btnSelectFolder.hovered ? "#313244" : "#181825")
-                    border.color: "#313244"
+                    color: btnSelectFolder.pressed ? Theme.border : (btnSelectFolder.hovered ? Theme.surfaceHover : Theme.background)
+                    border.color: Theme.border
                     border.width: 1
                     radius: 6
                 }
@@ -146,14 +146,12 @@ Rectangle {
                 width: 36
                 height: 36
                 radius: 18
-                border.color: "#b4befe"
-                border.width: 1
                 Layout.alignment: Qt.AlignVCenter
                 clip: true
 
                 ImageRounded {
                     source: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/images/profileIcon.png"
-                    sourceSize: 35
+                    sourceSize: 36
                 }
             }
         }
@@ -164,6 +162,6 @@ Rectangle {
         anchors.bottom: parent.bottom
         width: parent.width
         height: 1
-        color: "#313244"
+        color: Theme.border
     }
 }

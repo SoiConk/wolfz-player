@@ -11,13 +11,6 @@ Item {
     property var  albumId
     property StackView stackView
 
-    Connections {
-        target: ShowInfo
-        function onReloadAlbumCache() {
-            refreshTrigger++
-        }
-    }
-
     PlaylistModel {
         id: playlistModel
         playlistId: root.albumId
@@ -69,10 +62,10 @@ Item {
                 width: 250
                 height: 250
                 radius: 8
-                color: "#313244"
+                color: Theme.surfaceHover
 
                 ImageRounded {
-                    source: ShowInfo.albumCoverPath(Number(albumId))
+                    source: ShowInfo.albumCoverPath(Number(root.albumId))
                     sourceSize: 250
                 }
 
@@ -82,10 +75,10 @@ Item {
 
                 Rectangle {
                     anchors.fill: parent
-                    color: "#b0000000"
+                    color: "black"
                     radius: parent.radius-2
                     opacity: coverHover.hovered ? 1.0 : 0.0
-                    visible: opacity > 0.0
+                    visible: true
 
                     Behavior on opacity {
                         NumberAnimation { duration: 200 }
@@ -120,7 +113,7 @@ Item {
                         width: 100
                         radius: 6
                         color: "transparent"
-                        border.color: "#45475a"
+                        border.color: Theme.border
                         border.width: 1
 
                         CustomButton {
@@ -138,7 +131,7 @@ Item {
 
                     Text {
                         text: ShowInfo.name(Number(albumId))
-                        color: "#cdd6f4"
+                        color: Theme.text
                         font.pixelSize: 55
                         Layout.fillWidth: true
                         elide: Text.ElideRight
@@ -146,7 +139,7 @@ Item {
 
                     Text {
                         text: ShowInfo.durations(Number(albumId))
-                        color: "#a6adc8"
+                        color: Theme.subtext
                         font.pixelSize: 35
                         Layout.fillWidth: true
                         elide: Text.ElideRight
@@ -159,7 +152,7 @@ Item {
                     height: 30
                     IconButton {
                         iconSource: "qrc:/qt/qml/Blueberry_Wolfz/src/ui/assets/icons/buttonPlay.svg"
-                        onClicked: MusicLoader.openPlaylist(albumId, 0)
+                        onClicked: MusicLoader.openPlaylist(Number(albumId), 0)
                     }
 
                     IconButton {
@@ -167,7 +160,7 @@ Item {
                         onClicked: {
                             dialogManagerADV.playlistId = Number(albumId)
                             dialogManagerADV.openDeletePlaylist(dialogManagerADV.playlistId, (albumId) => {
-                                playlistService.removePlaylist(albumId)
+                                playlistService.removePlaylist(Number(albumId))
                                 root.stackView.pop()
                             })
                         }
@@ -186,14 +179,14 @@ Item {
                 text: "#"
                 Layout.preferredWidth: 50
                 horizontalAlignment: Text.AlignHCenter
-                color: "#a6adc8"
+                color: Theme.subtext
                 font.pixelSize: 18
             }
 
             Text {
                 text: "Song"
                 Layout.fillWidth: true
-                color: "#a6adc8"
+                color: Theme.subtext
                 font.pixelSize: 18
             }
 
@@ -205,7 +198,7 @@ Item {
                 text: "Duration"
                 Layout.preferredWidth: 80
                 visible: parent.width > 550
-                color: "#a6adc8"
+                color: Theme.subtext
                 font.pixelSize: 18
             }
 
@@ -215,7 +208,7 @@ Item {
         }
 
         Rectangle {
-            color: "#45475a"
+            color: Theme.border
             Layout.fillWidth: true
             height: 1
         }
@@ -232,6 +225,18 @@ Item {
                 width: listView.width
                 height: 60
 
+                AppMenu {
+                    id: songContextMenu
+                    property int songId: -1
+
+                    MenuItem {
+                        text: "Remove Song From Playlist"
+                        onTriggered: {
+                            playlistService.removeSong(Number(albumId), Number(songContextMenu.songId))
+                        }
+                    }
+                }
+
                 HoverHandler {
                     id: hover
                 }
@@ -242,7 +247,6 @@ Item {
                     anchors.fill: parent
                     spacing: 10
 
-                    // ===== # / play =====
                     Item {
                         Layout.preferredWidth: 50
                         Layout.fillHeight: true
@@ -251,7 +255,7 @@ Item {
                             anchors.centerIn: parent
                             text: index + 1
                             visible: !listItem.hovered
-                            color: "#cdd6f4"
+                            color: Theme.text
                             font.pixelSize: 18
                         }
 
@@ -273,7 +277,7 @@ Item {
                             width: 50
                             height: 50
                             radius: 6
-                            color: "#313244"
+                            color: "transparent"
                             ImageRounded {
                                 source: ShowInfo.miniCoverPath(Number(modelData))
                                 sourceSize: 50
@@ -287,7 +291,7 @@ Item {
 
                             Text {
                                 text: ShowInfo.title(Number(modelData))
-                                color: "#cdd6f4"
+                                color: Theme.text
                                 font.pixelSize: 26
                                 font.bold: false
                                 elide: Text.ElideRight
@@ -295,7 +299,7 @@ Item {
                             }
                             Text {
                                 text: ShowInfo.artist(Number(modelData))
-                                color: "#a6adc8"
+                                color: Theme.subtext
                                 font.pixelSize: 16
                                 font.italic: true
                                 elide: Text.ElideRight
@@ -304,7 +308,6 @@ Item {
                         }
                     }
 
-                    // ===== Duration =====
                     Text {
                         Layout.alignment: Qt.AlignVCenter
                         horizontalAlignment: Text.AlignHCenter
@@ -312,11 +315,10 @@ Item {
                         text: ShowInfo.duration(Number(modelData))
                         Layout.preferredWidth: 80
                         visible: listView.width > 550
-                        color: "#a6adc8"
+                        color: Theme.subtext
                         font.pixelSize: 18
                     }
 
-                    // ===== Cột cuối (icon giống #) =====
                     Item {
                         Layout.preferredWidth: 40
                         Layout.fillHeight: true
@@ -326,7 +328,8 @@ Item {
                             anchors.centerIn: parent
                             visible: listItem.hovered
                             onClicked: {
-                                console.log("A")
+                                songContextMenu.songId = Number(modelData)
+                                songContextMenu.popup()
                             }
                         }
                     }
@@ -335,32 +338,7 @@ Item {
                 }
             }
 
-            ScrollBar.vertical: ScrollBar {
-                id: playlistScrollBar
-
-                policy: ScrollBar.AsNeeded
-
-                width: 10
-
-                contentItem: Rectangle {
-                    implicitWidth: 10
-                    radius: 4
-                    color: "#6c7086"
-
-                    opacity: playlistScrollBar.pressed ? 0.9 : 0.5
-                }
-
-                background: Rectangle {
-                    color: "transparent"
-                }
-            }
+            ScrollBar.vertical: CustomScrollBar {}
         }
     }
-    /*
-    onAlbumIdChanged: {
-        if (albumId !== undefined && albumId !== null) {
-            songModel.setAlbum(albumId)
-        }
-    }
-    */
 }

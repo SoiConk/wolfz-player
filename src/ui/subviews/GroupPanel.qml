@@ -6,11 +6,11 @@ import QtQuick.Controls
 
 Rectangle {
     id: gproot
-    color: "#1e1e2e"
-    border.color: "#313244"
+    color: Theme.surface
+    border.color: Theme.border
     border.width: 1
 
-    property int currentGroupTab: 0 // 0: History, 1: Queue, 2: Lyrics
+    property int currentGroupTab: 1 // 0: History, 1: Queue, 2: Lyrics
 
     ColumnLayout {
         anchors.fill: parent
@@ -26,42 +26,33 @@ Rectangle {
                 anchors.fill: parent
                 spacing: 0
 
-                Button {
-                    Layout.fillWidth: true; Layout.fillHeight: true; flat: true
-                    contentItem: Text {
-                        text: "History"
-                        color: gproot.currentGroupTab === 0 ? "#f38ba8" : "#a6adc8"
-                        font.bold: gproot.currentGroupTab === 0
-                        font.pixelSize: 13
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
+                CustomTabButton {
+                    text: "History"
+                    active: gproot.currentGroupTab === 0
                     onClicked: gproot.currentGroupTab = 0
                 }
 
-                Button {
-                    Layout.fillWidth: true; Layout.fillHeight: true; flat: true
-                    contentItem: Text {
-                        text: "Queue"
-                        color: gproot.currentGroupTab === 1 ? "#f38ba8" : "#a6adc8"
-                        font.bold: gproot.currentGroupTab === 1
-                        font.pixelSize: 13
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
+                Rectangle {
+                    height: 30
+                    width: 1
+                    color: Theme.border
+                }
+
+                CustomTabButton {
+                    text: "Queue"
+                    active: gproot.currentGroupTab === 1
                     onClicked: gproot.currentGroupTab = 1
                 }
 
-                Button {
-                    Layout.fillWidth: true; Layout.fillHeight: true; flat: true
-                    contentItem: Text {
-                        text: "Lyrics"
-                        color: gproot.currentGroupTab === 2 ? "#f38ba8" : "#a6adc8"
-                        font.bold: gproot.currentGroupTab === 2
-                        font.pixelSize: 13
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
+                Rectangle {
+                    height: 30
+                    width: 1
+                    color: Theme.border
+                }
+
+                CustomTabButton {
+                    text: "Lyrics"
+                    active: gproot.currentGroupTab === 2
                     onClicked: gproot.currentGroupTab = 2
                 }
             }

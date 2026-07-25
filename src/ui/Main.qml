@@ -29,11 +29,7 @@ ApplicationWindow {
             id: topBar
             Layout.fillWidth: true
             Layout.preferredHeight: 60
-            Layout.minimumHeight: 60
             Layout.maximumHeight: 60
-            onSwitchToHistory: {
-                mainContent.groupPanel.currentGroupTab = 0
-            }
         }
 
         RowLayout {
@@ -61,7 +57,6 @@ ApplicationWindow {
             id: playerBar
             Layout.fillWidth: true
             Layout.preferredHeight: 90
-            Layout.minimumHeight: 90
             Layout.maximumHeight: 90
         }
     }

@@ -6,7 +6,7 @@ import QtQuick.Controls
 
 Rectangle {
     id: coverArtRoot
-    color: "#181825"
+    color: Theme.background
 
     Rectangle {
         id: coverContainer
@@ -19,7 +19,6 @@ Rectangle {
 
         ImageRounded {
             source: ShowInfo.coverPath(PlayerController.currentSong)
-            sourceSize: 832
             showDefaultOnEmpty: true
         }
     }

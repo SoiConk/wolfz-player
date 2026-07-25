@@ -1,3 +1,5 @@
+import Blueberry_Wolfz 1.0
+
 import QtQuick
 import QtQuick.Layouts
 
@@ -11,7 +13,7 @@ Item {
 
         Text {
             text: "WIP"
-            color: "#6c7086"
+            color: Theme.accent
             font.pixelSize: 13
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap

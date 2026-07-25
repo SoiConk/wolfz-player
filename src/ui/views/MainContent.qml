@@ -6,19 +6,31 @@ import QtQuick.Controls
 
 Rectangle {
     id: mainContentRoot
-    color: "#1e1e2e"
+    color: Theme.background
 
     // Property get from SideBar through Main.qml
     property int currentPageIndex: 0
-    property alias groupPanel: groupPanelRoot
 
     readonly property bool isCollaped: width < 800
 
-    StackLayout {
+    Loader {
         anchors.fill: parent
-        currentIndex: mainContentRoot.currentPageIndex
 
-        // Home
+        sourceComponent: {
+            switch(currentPageIndex) {
+                case 0:
+                    return homeComponent
+                case 1:
+                    return libraryComponent
+                case 2:
+                    return aboutComponent
+                default: return homeComponent
+            }
+        }
+    }
+
+    Component {
+        id: homeComponent
         RowLayout {
             id: homeViewPage
             spacing: 0
@@ -33,19 +45,26 @@ Rectangle {
             GroupPanel {
                 id: groupPanelRoot
                 Layout.fillHeight: true
-                Layout.preferredWidth: parent.width * 0.35
+                Layout.preferredWidth: mainContentRoot.width * 0.35
                 Layout.minimumWidth: 320
                 Layout.maximumWidth: 450
-                visible: !isCollaped
+                visible: !mainContentRoot.isCollaped
             }
         }
+    }
 
+    Component {
+        id: libraryComponent
         Library {
             id: libraryViewPage
         }
+    }
 
+    Component {
+        id: aboutComponent
         About {
             id: aboutViewPage
         }
     }
+
 }

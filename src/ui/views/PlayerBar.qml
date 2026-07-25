@@ -6,7 +6,7 @@ import QtQuick.Controls
 
 Rectangle {
     id: playerBarRoot
-    color: "#11111b"
+    color: Theme.layer
 
     function formatTime(ms) {
             if (ms <= 0) return "00:00";
@@ -15,7 +15,7 @@ Rectangle {
             let seconds = totalSeconds % 60;
             return String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
     }
-    property bool isPlaying: PlayerController.currentSong !== -1
+    property bool hasSong: PlayerController.currentSong !== -1
 
     CustomSlider {
         anchors.top: parent.top
@@ -53,12 +53,11 @@ Rectangle {
                 width: 45
                 height: 45
                 radius: 4
-                color: "#313244"
+                color: "transparent"
                 Layout.alignment: Qt.AlignVCenter
 
                 ImageRounded {
                     source: ShowInfo.miniCoverPath(PlayerController.currentSong)
-                    sourceSize: 45
                     showDefaultOnEmpty: true
                 }
             }
@@ -70,18 +69,18 @@ Rectangle {
                 visible: parent.showText
 
                 Text {
-                    text: playerBarRoot.isPlaying ? ShowInfo.title(PlayerController.currentSong)
+                    text: playerBarRoot.hasSong ? ShowInfo.title(PlayerController.currentSong)
                                     : "Unknown"
-                    color: "#cdd6f4"
+                    color: Theme.text
                     font.pixelSize: 24
                     font.bold: true
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
                 Text {
-                    text: playerBarRoot.isPlaying ? ShowInfo.artist(PlayerController.currentSong)
+                    text: playerBarRoot.hasSong ? ShowInfo.artist(PlayerController.currentSong)
                                     : "None"
-                    color: "#a6adc8"
+                    color: Theme.subtext
                     font.pixelSize: 14
                     font.italic: true
                     elide: Text.ElideRight
@@ -115,7 +114,7 @@ Rectangle {
             Text {
                 text: playerBarRoot.formatTime(PlayerController.position)
                       + " / " + playerBarRoot.formatTime(PlayerController.duration)
-                color: "White"
+                color: Theme.text
                 font.pixelSize: 16
                 Layout.leftMargin: 5
             }
