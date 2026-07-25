@@ -15,9 +15,9 @@ Dialog {
     signal confirm(int albumId)
 
     background: Rectangle {
-        color: "#1e1e2e"
+        color: Theme.surface
         radius: 12
-        border.color: "#313244"
+        border.color: Theme.border
     }
 
     Column {
@@ -28,7 +28,7 @@ Dialog {
 
         Text {
             text: "Delete Playlist"
-            color: "#f38ba8"
+            color: Theme.deny
             font.pixelSize: 22
             font.bold: true
         }
@@ -36,14 +36,14 @@ Dialog {
         Text {
             width: parent.width - content.padding * 2
             text: "Are you sure you want to delete \"" + playlistName + "\"?"
-            color: "#cdd6f4"
+            color: Theme.text
             font.pixelSize: 15
             wrapMode: Text.WordWrap
         }
 
         Text {
             text: "This action cannot be undone."
-            color: "#a6adc8"
+            color: Theme.subtext
             font.pixelSize: 13
         }
 
@@ -58,13 +58,13 @@ Dialog {
                 height: 40
 
                 background: Rectangle {
-                    color: parent.hovered ? "#313244" : "#181825"
+                    color: parent.hovered ? Theme.surfaceHover : Theme.background
                     radius: 6
                 }
 
                 contentItem: Text {
                     text: parent.text
-                    color: "#a6adc8"
+                    color: Theme.subtext
                     font.pixelSize: 14
                     anchors.fill: parent
                     horizontalAlignment: Text.AlignHCenter
@@ -81,14 +81,14 @@ Dialog {
 
                 background: Rectangle {
                     radius: 6
-                    color: parent.pressed ? "#f38ba8"
-                         : parent.hovered ? "#fab6c1"
-                         : "#f38ba8"
+                    color: parent.pressed ? Theme.deny
+                         : parent.hovered ? Theme.subtext
+                         : Theme.deny
                 }
 
                 contentItem: Text {
                     text: parent.text
-                    color: "#1e1e2e"
+                    color: Theme.surface
                     font.pixelSize: 14
                     font.bold: true
                     anchors.fill: parent

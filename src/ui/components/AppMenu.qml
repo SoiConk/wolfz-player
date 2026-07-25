@@ -1,13 +1,15 @@
+import Blueberry_Wolfz 1.0
+
 import QtQuick
 import QtQuick.Controls
 
 Menu {
     id: root
 
-    property color bgColor: "#1e1e2e"
-    property color borderColor: "#313244"
-    property color hoverColor: "#313244"
-    property color textColor: "#cdd6f4"
+    property color bgColor: Theme.background
+    property color borderColor: Theme.border
+    property color hoverColor: Theme.surfaceHover
+    property color textColor: Theme.text
 
     padding: 8
 

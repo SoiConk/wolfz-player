@@ -17,9 +17,9 @@ Dialog {
     signal playlistSelected(int albumId, int songId)
 
     background: Rectangle {
-        color: "#1e1e2e"
+        color: Theme.surface
         radius: 12
-        border.color: "#313244"
+        border.color: Theme.border
     }
 
     Column {
@@ -30,7 +30,7 @@ Dialog {
 
         Text {
             text: "Select Playlist"
-            color: "#cdd6f4"
+            color: Theme.text
             font.pixelSize: 22
             font.bold: true
         }
@@ -38,9 +38,9 @@ Dialog {
         Rectangle {
             width: parent.width - content.padding * 2
             height: 280
-            color: "#181825"
+            color: Theme.background
             radius: 8
-            border.color: "#313244"
+            border.color: Theme.border
             clip: true
 
             ListView {
@@ -66,12 +66,12 @@ Dialog {
 
                         background: Rectangle {
                             radius: 4
-                            color: delegateItem.hovered ? "#252538" : "transparent"
+                            color: delegateItem.hovered ? Theme.surfaceHover : "transparent"
                         }
 
                         contentItem: Text {
                             text: ShowInfo.name(Number(modelData))
-                            color: "#cdd6f4"
+                            color: Theme.text
                             font.pixelSize: 15
                             font.bold: true
                             verticalAlignment: Text.AlignVCenter
@@ -85,23 +85,7 @@ Dialog {
                     }
                 }
 
-                ScrollBar.vertical: ScrollBar {
-                    id: playlistScrollBar
-
-                    policy: ScrollBar.AsNeeded
-                    width: 10
-
-                    contentItem: Rectangle {
-                        implicitWidth: 10
-                        radius: 4
-                        color: "#6c7086"
-                        opacity: playlistScrollBar.pressed ? 0.9 : 0.5
-                    }
-
-                    background: Rectangle {
-                        color: "transparent"
-                    }
-                }
+                ScrollBar.vertical: CustomScrollBar {}
             }
         }
 

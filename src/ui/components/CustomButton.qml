@@ -9,8 +9,11 @@
     }
 */
 
+import Blueberry_Wolfz 1.0
+
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Effects
 
 Item {
     id: root
@@ -28,7 +31,8 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: 6
-        color: root.isActive ? "#313244" : (mouseArea.containsMouse ? "#252538" : "transparent")
+        color: root.isActive ? Theme.surfaceHover
+                             : (mouseArea.containsMouse ? Theme.background : "transparent")
 
         Behavior on color { ColorAnimation { duration: 100 } }
 
@@ -41,22 +45,31 @@ Item {
             opacity: root.isActive ? 1.0 : (mouseArea.containsMouse ? 0.9 : 0.6)
             Behavior on opacity { NumberAnimation { duration: 100 } }
 
-            Image {
-                id: iconImg
-                source: root.iconSource
-                sourceSize.width: 25
-                sourceSize.height: 25
-                fillMode: Image.PreserveAspectFit
-                smooth: true
+            Item {
+                Layout.preferredWidth: 25
+                    Layout.preferredHeight: 25
+                    Layout.alignment: root.isCollapsed ? Qt.AlignCenter : Qt.AlignLeft
+                Image {
+                    id: iconImg
+                    source: root.iconSource
+                    fillMode: Image.PreserveAspectFit
+                    smooth: true
+                    visible: false
+                }
 
-                Layout.alignment: root.isCollapsed ? Qt.AlignCenter : Qt.AlignLeft
+                MultiEffect {
+                    anchors.fill: iconImg
+                    source: iconImg
+                    colorization: 1.0
+                    colorizationColor: Theme.subtext
+                }
             }
 
             Text {
                 text: root.text
                 font.pixelSize: 20
                 font.bold: root.isActive
-                color: "#cdd6f4"
+                color: Theme.text
 
                 visible: !root.isCollapsed
                 Layout.fillWidth: true

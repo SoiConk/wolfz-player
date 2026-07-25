@@ -1,3 +1,5 @@
+import Blueberry_Wolfz 1.0
+
 import QtQuick
 import QtQuick.Controls
 
@@ -12,9 +14,9 @@ Dialog {
     signal submit(string name, int songId)
 
     background: Rectangle {
-        color: "#1e1e2e"
+        color: Theme.surface
         radius: 12
-        border.color: "#313244"
+        border.color: Theme.border
     }
 
     Column {
@@ -25,7 +27,7 @@ Dialog {
 
         Text {
             text: "Create Playlist"
-            color: "#cdd6f4"
+            color: Theme.confirm
             font.pixelSize: 24
             font.bold: true
         }
@@ -36,13 +38,13 @@ Dialog {
             height: 44
             font.pixelSize: 15
             placeholderText: "Enter playlist name"
-            color: "#cdd6f4"
-            placeholderTextColor: "#6c7086"
+            color: Theme.text
+            placeholderTextColor: Theme.subtext
 
             background: Rectangle {
                 radius: 6
-                color: "#181825"
-                border.color: input.focus ? "#b4befe" : "#313244"
+                color: Theme.background
+                border.color: input.focus ? Theme.confirm : Theme.border
             }
         }
 
@@ -57,13 +59,13 @@ Dialog {
                 height: 40
 
                 background: Rectangle {
-                    color: parent.hovered ? "#313244" : "#181825"
+                    color: parent.hovered ? Theme.surfaceHover : Theme.background
                     radius: 6
                 }
 
                 contentItem: Text {
                     text: parent.text
-                    color: "#a6adc8"
+                    color: Theme.subtext
                     font.pixelSize: 14
                     anchors.fill: parent
                     horizontalAlignment: Text.AlignHCenter
@@ -81,15 +83,15 @@ Dialog {
 
                 background: Rectangle {
                     radius: 6
-                    color: !parent.enabled ? "#313244"
-                         : parent.pressed ? "#a6adc8"
-                         : parent.hovered ? "#cdd6f4"
-                         : "#b4befe"
+                    color: !parent.enabled ? Theme.surfaceHover
+                         : parent.pressed ? Theme.confirm
+                         : parent.hovered ? Theme.text
+                         : Theme.confirm
                 }
 
                 contentItem: Text {
                     text: parent.text
-                    color: "#1e1e2e"
+                    color: Theme.surface
                     font.pixelSize: 14
                     font.bold: true
                     anchors.fill: parent

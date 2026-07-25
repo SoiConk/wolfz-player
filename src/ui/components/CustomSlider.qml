@@ -1,3 +1,5 @@
+import Blueberry_Wolfz 1.0
+
 import QtQuick
 import QtQuick.Layouts
 
@@ -8,8 +10,8 @@ Item {
     property real from: 0.0
     property real to: 1.0
 
-    property color progressColor: "#f38ba8"
-    property color backgroundColor: "#313244"
+    property color progressColor: Theme.accent
+    property color backgroundColor: Theme.surfaceHover
 
     property bool alwaysShowHandle: false
 
@@ -43,7 +45,7 @@ Item {
 
     Rectangle {
         id: handle
-        width: 22; height: 22; radius: 11; color: "#ffffff"
+        width: 22; height: 22; radius: 11; color: Theme.primary
         anchors.verticalCenter: bgTrack.verticalCenter
         x: (bgTrack.width * root.factor) - (width / 2)
         visible: root.alwaysShowHandle || mouseArea.containsMouse

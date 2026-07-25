@@ -1,3 +1,5 @@
+import Blueberry_Wolfz 1.0
+
 import QtQuick
 import QtQuick.Effects
 
@@ -48,7 +50,7 @@ Item {
                 smooth: true
                 asynchronous: true
                 cache: false
-                sourceSize.width: root.sourceSize > 0 ? root.sourceSize : undefined
+                sourceSize.width: root.sourceSize
                 sourceSize.height: undefined
             }
 
@@ -57,6 +59,8 @@ Item {
                 anchors.fill: image
                 maskEnabled: true
                 maskSource: mask
+                maskThresholdMin: 0.5
+                maskSpreadAtMin: 1.0
             }
 
             Rectangle {
@@ -66,6 +70,7 @@ Item {
                 radius: root.effectiveRadius
                 color: "black"
                 layer.enabled: true
+                layer.smooth: true
                 visible: false
                 antialiasing: true
             }
@@ -82,8 +87,9 @@ Item {
                 fillMode: AnimatedImage.PreserveAspectCrop
                 visible: false
                 smooth: true
+                asynchronous: true
                 cache: false
-                sourceSize.width: root.sourceSize > 0 ? root.sourceSize : undefined
+                sourceSize.width: root.sourceSize
                 sourceSize.height: undefined
             }
 
@@ -92,6 +98,9 @@ Item {
                 anchors.fill: gif
                 maskEnabled: true
                 maskSource: mask
+
+                maskThresholdMin: 0.5
+                maskSpreadAtMin: 1.0
             }
 
             Rectangle {
@@ -101,6 +110,7 @@ Item {
                 radius: root.effectiveRadius
                 color: "black"
                 layer.enabled: true
+                layer.smooth: true
                 visible: false
                 antialiasing: true
             }
@@ -110,7 +120,8 @@ Item {
     Component {
         id: rectangleComponent
         Rectangle {
-            color: "#181926"
+            radius: root.effectiveRadius
+            color: Theme.layer
         }
     }
 }
