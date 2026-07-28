@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Blueberry Wolfz
+Comment=Local Music Player
+Exec=Blueberry_Wolfz
+Icon=blueberry_wolfz
+Categories=AudioVideo;Audio;Player;Qt;
+Terminal=false
+StartupWMClass=Blueberry_Wolfz
