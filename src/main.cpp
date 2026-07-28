@@ -10,6 +10,11 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
+    app.setOrganizationName(APP_ORGANIZATION_NAME);
+    app.setOrganizationDomain(APP_ORGANIZATION_DOMAIN);
+    app.setApplicationName(APP_NAME);
+    app.setApplicationVersion(APP_VERSION);
+
     QQuickStyle::setStyle("Basic");
 
     app.setWindowIcon(QIcon(":/Blueberry_Wolfz/src/ui/assets/images/appIcon.png"));
