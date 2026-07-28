@@ -45,6 +45,18 @@ Item {
         }
     }
 
+    AppMenu {
+        id: songContextMenu
+        property int songId: -1
+
+        MenuItem {
+            text: "Remove Song From Playlist"
+            onTriggered: {
+                playlistService.removeSong(Number(albumId), Number(songContextMenu.songId))
+            }
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
         spacing: 10
@@ -224,18 +236,6 @@ Item {
                 id: listItem
                 width: listView.width
                 height: 60
-
-                AppMenu {
-                    id: songContextMenu
-                    property int songId: -1
-
-                    MenuItem {
-                        text: "Remove Song From Playlist"
-                        onTriggered: {
-                            playlistService.removeSong(Number(albumId), Number(songContextMenu.songId))
-                        }
-                    }
-                }
 
                 HoverHandler {
                     id: hover

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 
-project(Blueberry_Wolfz VERSION 0.1 LANGUAGES CXX)
+project(wolfz-player VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -71,9 +71,17 @@ qt_add_executable(Blueberry_Wolfz
     ${PROJECT_SOURCES}
 )
 
+target_compile_definitions(Blueberry_Wolfz PRIVATE
+    APP_ORGANIZATION_NAME="SoiCon"
+    APP_ORGANIZATION_DOMAIN="io.github.soiconk"
+    APP_NAME="Blueberry_Wolfz"
+    APP_VERSION="${PROJECT_VERSION}"
+)
+
 target_include_directories(Blueberry_Wolfz PUBLIC
     src
     src/control/logic
+    src/core
     src/control/service
     src/control/service/uimodel
 )
@@ -115,7 +123,7 @@ target_link_libraries(Blueberry_Wolfz PRIVATE
     TagLib::TagLib
 )
 
-target_compile_definitions(Blueberry_Wolfz PRIVATE QT_NO_DEBUG_OUTPUT)
+target_compile_definitions(Blueberry_Wolfz PRIVATE $<$<CONFIG:Release>:QT_NO_DEBUG_OUTPUT>)
 
 if(WIN32)
     set_target_properties(Blueberry_Wolfz PROPERTIES
@@ -124,9 +132,27 @@ if(WIN32)
 endif()
 
 if(APPLE)
+    set(MACOSX_ICON_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/ui/assets/images/appLogo.icns")
+
+    set_source_files_properties(${MACOSX_ICON_FILE} PROPERTIES
+        MACOSX_PACKAGE_LOCATION "Resources"
+    )
+
+    target_sources(Blueberry_Wolfz PRIVATE ${MACOSX_ICON_FILE})
     set_target_properties(Blueberry_Wolfz PROPERTIES
         MACOSX_BUNDLE TRUE
+        MACOSX_BUNDLE_ICON_FILE "appLogo.icns"
+        MACOSX_BUNDLE_GUI_IDENTIFIER "io.github.soiconk.wolfzplayer"
+        MACOSX_BUNDLE_BUNDLE_NAME "Blueberry Wolfz"
+        MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}"
+        MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
     )
+endif()
+
+if(UNIX AND NOT APPLE)
+    include(GNUInstallDirs)
+    install(TARGETS Blueberry_Wolfz RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(FILES Blueberry_Wolfz.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 endif()
 
 qt_finalize_executable(Blueberry_Wolfz)

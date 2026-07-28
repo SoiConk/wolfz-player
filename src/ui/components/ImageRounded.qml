@@ -10,6 +10,7 @@ Item {
     property real radius: -1
     property bool isAnimated: source.toString().endsWith(".gif")
     property int sourceSize: 0
+    property bool cache: false
 
     anchors.fill: parent
 
@@ -49,7 +50,7 @@ Item {
                 visible: false
                 smooth: true
                 asynchronous: true
-                cache: false
+                cache: root.cache
                 sourceSize.width: root.sourceSize
                 sourceSize.height: undefined
             }

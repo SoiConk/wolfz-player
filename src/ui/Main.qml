@@ -60,4 +60,60 @@ ApplicationWindow {
             Layout.maximumHeight: 90
         }
     }
+
+    Shortcut {
+        sequence: "Space"
+
+        onActivated: {
+            PlayerController.togglePlay()
+        }
+    }
+
+    Shortcut {
+        sequence: "Ctrl+Right"
+
+        onActivated: {
+            PlayerController.playNext()
+        }
+    }
+
+    Shortcut {
+        sequence: "Ctrl+Left"
+
+        onActivated: {
+            PlayerController.playPrevious()
+        }
+    }
+
+    Shortcut {
+        sequence: "Ctrl+R"
+
+        onActivated: {
+            PlayerController.cycleLoopMode()
+        }
+    }
+
+    Shortcut {
+        sequence: "Ctrl+Up"
+
+        onActivated: {
+            PlayerController.setVolumeByStep(5)
+        }
+    }
+
+    Shortcut {
+        sequence: "Ctrl+Down"
+
+        onActivated: {
+            PlayerController.setVolumeByStep(-5)
+        }
+    }
+
+    Shortcut {
+        sequence: "Ctrl+M"
+
+        onActivated: {
+            PlayerController.toggleMute()
+        }
+    }
 }

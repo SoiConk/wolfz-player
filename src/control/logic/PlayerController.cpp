@@ -170,6 +170,15 @@ void PlayerController::setVolume(int value)
     }
 }
 
+void PlayerController::setVolumeByStep(int step)
+{
+    int value = volume + step;
+    if (value < 0) value = 0;
+    if (value > 100) value = 100;
+
+    setVolume(value);
+}
+
 void PlayerController::toggleMute()
 {
     if (volume > 0) {

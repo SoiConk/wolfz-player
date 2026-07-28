@@ -67,16 +67,16 @@ Theme colors are centralized through a QML theme manager, allowing UI components
 
 Currently implemented:
 
-- Local audio playback
-- Play / Pause / Stop control
-- Volume control
-- Playlist management
-- Single loop and queue loop
-- Queue system
-- Playback history
-- QML-based user interface
-- C++ backend exposed to QML
+- Local music playback
+- File and folder importing
+- Music library and playlist management
+- Queue and playback history
+- Play / Pause, Next / Previous, Volume and Mute controls
+- Loop modes
+- Basic keyboard shortcuts
 - Local database storage
+- Supports various media files/ metadata
+- QML-based UI with C++ backend integration
 
 More features will be added during development.
 
@@ -124,7 +124,7 @@ Blueberry Wolfz stores user data separately from the application installation di
 On Windows, application data is stored at:
 
 ```plainttext
-%APPDATA%/Blueberry_Wolfz/
+%APPDATA%/SoiCon/Blueberry_Wolfz/
 ```
 
 Used for persistent user data:
@@ -138,7 +138,7 @@ Blueberry_Wolfz/
 ---
 
 ```plaintext
-%LOCALAPPDATA%/Blueberry_Wolfz/
+%LOCALAPPDATA%/SoiCon/Blueberry_Wolfz/
 ```
 
 Used for local and temporary data:
@@ -216,13 +216,10 @@ Native installers are not available yet.
 Some improvements planned for the future:
 
 - Improve UI design and animations
-- Add better music library management
-- Add metadata reading and album artwork support
+- Improve music library management
 - Improve image caching system
-- Optimize QML performance
-- Improve C++ and QML integration
-- Add better settings management
-- Improve cross-platform support
+- Optimize performance and memory usage
+- Improve settings and cross-platform support
 - Improve UI responsiveness for high-resolution displays
 
 ---

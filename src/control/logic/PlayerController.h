@@ -49,6 +49,7 @@ public:
     Volume Group
     */
     Q_INVOKABLE void setVolume(int value);
+    Q_INVOKABLE void setVolumeByStep(int step);
     Q_INVOKABLE void toggleMute();
     int getVolume() const;
 

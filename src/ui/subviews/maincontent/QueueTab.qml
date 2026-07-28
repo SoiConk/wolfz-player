@@ -41,6 +41,29 @@ Item {
     }
 
     AppMenu {
+        id: songContextMenu
+        property int songId: -1
+
+        MenuItem {
+            text: "Add Song to Playlist"
+            onTriggered: {
+                    dialogManagerQueue.openChoosePlaylist(songContextMenu.songId, (album, sId) => {
+                    playlistService.addSongToPlaylist(album, Number(sId))
+                })
+            }
+        }
+
+        MenuItem {
+            text: "Add Song to New Playlist"
+            onTriggered: {
+                    dialogManagerQueue.openCreatePlaylist(songContextMenu.songId, (name, sId) => {
+                    playlistService.addSongToNewPlaylist(name, Number(sId))
+                })
+            }
+        }
+    }
+
+    AppMenu {
         id: queueMenu
 
         MenuItem {
@@ -79,6 +102,7 @@ Item {
         anchors.rightMargin: 5
         spacing: 4
         clip: true
+        reuseItems: true
 
         model: queueModel
 
@@ -98,29 +122,6 @@ Item {
                 border.width: 1
             }
 
-            AppMenu {
-                id: songContextMenu
-                property int songId: -1
-
-                MenuItem {
-                    text: "Add Song to Playlist"
-                    onTriggered: {
-                            dialogManagerQueue.openChoosePlaylist(songContextMenu.songId, (album, sId) => {
-                            playlistService.addSongToPlaylist(album, Number(sId))
-                        })
-                    }
-                }
-
-                MenuItem {
-                    text: "Add Song to New Playlist"
-                    onTriggered: {
-                            dialogManagerQueue.openCreatePlaylist(songContextMenu.songId, (name, sId) => {
-                            playlistService.addSongToNewPlaylist(name, Number(sId))
-                        })
-                    }
-                }
-            }
-
             contentItem: RowLayout {
                 anchors.fill: parent
                 anchors.leftMargin: 10
@@ -138,6 +139,7 @@ Item {
                     ImageRounded {
                         source: ShowInfo.miniCoverPath(Number(modelData))
                         sourceSize: 40
+                        cache: true
                     }
                 }
 

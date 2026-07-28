@@ -29,7 +29,7 @@ Dialog {
         Text {
             text: "Delete Playlist"
             color: Theme.deny
-            font.pixelSize: 22
+            font.pixelSize: 24
             font.bold: true
         }
 

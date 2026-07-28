@@ -31,7 +31,7 @@ Dialog {
         Text {
             text: "Select Playlist"
             color: Theme.text
-            font.pixelSize: 22
+            font.pixelSize: 24
             font.bold: true
         }
 

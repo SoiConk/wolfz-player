@@ -27,6 +27,29 @@ Item {
         visible: historyListView.count === 0
     }
 
+    AppMenu {
+        id: songContextMenu
+        property int songId: -1
+
+        MenuItem {
+            text: "Add Song to Playlist"
+            onTriggered: {
+                    dialogManagerHistory.openChoosePlaylist(songContextMenu.songId, (album, sId) => {
+                    playlistService.addSongToPlaylist(album, Number(sId))
+                })
+            }
+        }
+
+        MenuItem {
+            text: "Add Song to New Playlist"
+            onTriggered: {
+                    dialogManagerHistory.openCreatePlaylist(songContextMenu.songId, (name, sId) => {
+                    playlistService.addSongToNewPlaylist(name, Number(sId))
+                })
+            }
+        }
+    }
+
     ListView {
         id: historyListView
         anchors.fill: parent
@@ -50,29 +73,6 @@ Item {
                 radius: 4
                 border.color: index === 0 ? Theme.accent : "transparent"
                 border.width: 1
-            }
-
-            AppMenu {
-                id: songContextMenu
-                property int songId: -1
-
-                MenuItem {
-                    text: "Add Song to Playlist"
-                    onTriggered: {
-                            dialogManagerHistory.openChoosePlaylist(songContextMenu.songId, (album, sId) => {
-                            playlistService.addSongToPlaylist(album, Number(sId))
-                        })
-                    }
-                }
-
-                MenuItem {
-                    text: "Add Song to New Playlist"
-                    onTriggered: {
-                            dialogManagerHistory.openCreatePlaylist(songContextMenu.songId, (name, sId) => {
-                            playlistService.addSongToNewPlaylist(name, Number(sId))
-                        })
-                    }
-                }
             }
 
             contentItem: RowLayout {
